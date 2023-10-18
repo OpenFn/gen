@@ -1,0 +1,16 @@
+# Visual Studio Code (VS Code)
+.vscode/
+
+# Poetry specific files and directories
+poetry.lock
+__pypackages__/
+
+# FastAPI specific settings (assuming your main app is named 'main.py')
+__pycache__/
+
+# Environment variables file
+.env
+
+# Cache files
+.cache/
+tmp/
