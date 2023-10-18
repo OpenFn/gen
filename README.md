@@ -15,7 +15,7 @@ The project architecture is designed as a two-tier system. The first tier (curre
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/yourusername/ai-code-generation.git
+   git clone https://github.com/OpenFn/gen.git
    ```
 
 2. Navigate to the project directory:
@@ -44,8 +44,7 @@ The application will start processing requests from the specified API URL, utili
 
 The project structure is organized as follows:
 
-- `main.py`: Contains the main logic and application entry point.
-- `ai_models/`: Directory containing the relevant AI models and related utilities.
+- `app/`: Contains the main logic and application entry point.
 - `utils/`: Directory containing utility functions and helper modules for processing instructions and generating code.
 - `tests/`: Directory containing test files for the application.
 
@@ -65,4 +64,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Please ensure you replace the placeholders with actual links, instructions, and details relevant to your project.
+TBD: the placeholders are to be replaces with actual links, instructions, and details relevant to the project.
