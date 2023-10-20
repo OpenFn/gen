@@ -6,7 +6,7 @@ This repository contains a Python application that utilizes AI models to generat
 
 The project architecture is designed as a two-tier system. The first tier (current repo) handles the request processing, interacts with the API, and triggers the AI models. The second tier hosts AI inference and utilises the received preprocessed data to execute an AI model inference. The architecture diagram below provides an overview of the system:
 
-![Architecture Diagram](./architecture/architecture_diagram.png)
+![Architecture Diagram](./assets/system-proposal.png)
 
 
 
