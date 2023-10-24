@@ -1,0 +1,8 @@
+2023-10-24 12:29:36,360 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
+2023-10-24 12:34:30,056 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
+2023-10-24 12:34:42,728 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
+2023-10-24 12:36:58,744 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
+2023-10-24 12:37:10,906 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
+2023-10-24 12:41:31,471 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
+2023-10-24 12:41:57,985 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
+2023-10-24 12:42:47,191 ERROR inference.models.codet5 An error occurred during code generation: num_return_sequences has to be 1, but is 5 when doing greedy search.
