@@ -17,7 +17,7 @@ class CodeT5:
         self,
         text: str,
         max_length: int = 512,
-        num_return_sequences: int = 5,
+        num_return_sequences: int = 1,
     ) -> list[str]:
         """
         Generate code from text using the CodeT5 model
