@@ -6,7 +6,7 @@ class T5TextInput(BaseModel):
 
 
 class T5CodeOutput(BaseModel):
-    generate_code: list[str]
+    generated_code: list[str]
 
 
 class ObjectDetectionResponse(BaseModel):
