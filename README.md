@@ -1,4 +1,4 @@
-# Buil-time AI Code Generation from API
+# Built-time AI Code Generation from API
 
 This repository contains a Python application that utilizes AI models to generate code based on instructions received through an API URL. The application processes the instructions, runs the relevant AI models, and returns the generated code as a response. 
 
