@@ -1,3 +1,6 @@
 # API Constants
 HOST = "0.0.0.0"
 PORT = 8002
+
+# API Keys
+OPEN_API_KEY = "YOUR_API_KEY"

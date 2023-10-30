@@ -2,8 +2,8 @@ import logging
 
 from fastapi import FastAPI
 
-from inference.api import codet5
-from inference.schemas.constants import HOST, PORT
+from signature_generator.api.routers import router
+from signature_generator.utils.constants import HOST, PORT
 
 # Configure logging
 logging.basicConfig(
@@ -12,7 +12,7 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
 )
 
-app = FastAPI(title="Code Generation Inference Service", openapi_url="/openapi.json")
+app = FastAPI(title="Signature Generation Service", openapi_url="/openapi.json")
 
 
 @app.get("/", status_code=200)
@@ -20,10 +20,10 @@ async def root() -> dict:
     """
     Root GET
     """
-    return {"Code Generation Service": "running"}
+    return {"message": "The Signature Generator API is running!"}
 
 
-app.include_router(codet5.router, prefix="/codet5", tags=["CodeT5 generation"])
+app.include_router(router, tags=["Signature generation"])
 
 if __name__ == "__main__":
     # Use this for debugging purposes only
