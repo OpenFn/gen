@@ -1,10 +1,11 @@
-from logging import Logger
+import logging
 
 from fastapi import APIRouter, HTTPException
 
 from inference.models.codet5 import CodeT5
 from inference.schemas.models import T5CodeOutput, T5TextInput
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # Initialize the CodeT5 model
@@ -20,7 +21,7 @@ def generate_code(input_data: T5TextInput) -> T5CodeOutput:
     """
 
     try:
-        text = input_data.text
+        text = input_data.prompt
         generated_code = code_t5.generate_code(text)
         if generated_code is None:
             raise HTTPException(
@@ -29,5 +30,5 @@ def generate_code(input_data: T5TextInput) -> T5CodeOutput:
             )
         return {"generated_code": generated_code}
     except Exception as e:
-        Logger.error(f"An error occurred during code generation: {e}")
+        logger.error(f"An error occurred during code generation: {e}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {e}") from None

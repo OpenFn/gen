@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class T5TextInput(BaseModel):
-    text: str
+    prompt: str
 
 
 class T5CodeOutput(BaseModel):
