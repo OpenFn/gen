@@ -1,0 +1,3 @@
+2023-10-31 13:27:47,490 ERROR inference.api.gpt2 An error occurred during code generation: 'GPT2' object has no attribute 'generate_code'
+2023-10-31 13:27:50,161 ERROR inference.api.gpt2 An error occurred during code generation: 'GPT2' object has no attribute 'generate_code'
+2023-10-31 13:28:15,201 ERROR inference.api.gpt2 An error occurred during code generation: 'GPT2' object has no attribute 'generate_code'

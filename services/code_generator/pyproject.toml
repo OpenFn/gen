@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "generator"
+name = "code-generator"
 version = "0.1.0"
 description = ""
 authors = ["Isma-Ilou Sadou <isma@openfn.org>"]

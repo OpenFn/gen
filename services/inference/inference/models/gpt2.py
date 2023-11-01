@@ -11,7 +11,7 @@ class GPT2:
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         self.model = GPT2LMHeadModel.from_pretrained("gpt2")
 
-    def generate(self, text: str, max_length: int = 50, num_return_sequences: int = 1) -> str:
+    def generate(self, text: str, max_length: int = 1024, num_return_sequences: int = 1) -> str:
         """
         Generates text using the GPT-2 model
         :param text: Input text to generate continuation from

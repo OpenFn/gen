@@ -2,20 +2,18 @@ import logging
 
 import openai
 
-from inference.schemas.constants import OPEN_API_KEY
+from inference.schemas.constants import DEFAULT_OPEN_API_KEY
 
 # Create a logger
 logger = logging.getLogger(__name__)
 
-# Set your OpenAI API key
-openai.api_key = OPEN_API_KEY
-
 
 class GPT3:
-    def __init__(self):
-        self.api_key = OPEN_API_KEY  # Add any initialization logic here
+    def __init__(self, open_api_key: str = DEFAULT_OPEN_API_KEY):
+        self.api_key = open_api_key  # Set default key in
+        openai.api_key = open_api_key
 
-    def generate(self, prompt: str, max_tokens: int = 150) -> str:
+    def generate(self, prompt: str, max_tokens: int = 256) -> str:
         """
         Generates a completion from the GPT-3 model
         :param prompt: The text used to prompt the model
@@ -27,6 +25,7 @@ class GPT3:
                 engine="davinci",  # Specify the GPT-3 engine to use
                 prompt=prompt,
                 max_tokens=max_tokens,
+                temperature=0,
             )
             return response.choices[0].text
         except Exception as e:

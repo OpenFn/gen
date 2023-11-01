@@ -2,27 +2,27 @@ import logging
 
 from fastapi import APIRouter, HTTPException
 
-from inference.models.codet5 import CodeT5
+from inference.models.gpt2 import GPT2
 from inference.schemas.models import CodeOutput, PromptInput
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-# Initialize the CodeT5 model
-code_t5 = CodeT5()
+# Initialize the GPT2 model
+gpt2 = GPT2()
 
 
 @router.post("/generate_code")
 def generate_code(input_data: PromptInput) -> CodeOutput:
     """
-    Generate code based on the provided input text using the CodeT5 model.
+    Generate code based on the provided input text using the GPT-2 model.
     The function handles HTTP POST requests and returns the generated code,
     or an appropriate error message if an issue occurs during code generation.
     """
 
     try:
-        text = input_data.prompt
-        generated_code = code_t5.generate_code(text)
+        prompt = input_data.prompt
+        generated_code = gpt2.generate(prompt)
         if generated_code is None:
             raise HTTPException(
                 status_code=500,

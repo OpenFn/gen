@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 
 
-class T5TextInput(BaseModel):
+class PromptInput(BaseModel):
     prompt: str
 
 
-class T5CodeOutput(BaseModel):
+class CodeOutput(BaseModel):
     generated_code: list[str]
 
 

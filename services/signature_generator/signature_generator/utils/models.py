@@ -26,3 +26,11 @@ class SignatureGenerator:
 class SignatureInput(BaseModel):
     open_api_spec: str
     instruction: str
+    model_name: str = "codet5"
+
+
+def get_model_endpoint(model_name: str) -> str:
+    """
+    Get the endpoint for the model
+    """
+    return f"http://localhost:8002/{model_name.lower()}/generate_code/"

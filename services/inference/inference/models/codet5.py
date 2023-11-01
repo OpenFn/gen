@@ -16,7 +16,7 @@ class CodeT5:
     def generate_code(
         self,
         text: str,
-        max_length: int = 512,
+        max_length: int = 1024,
         num_return_sequences: int = 1,
     ) -> list[str]:
         """
@@ -34,9 +34,7 @@ class CodeT5:
                 max_length=max_length,
                 num_return_sequences=num_return_sequences,
             )
-            response = [
-                self.tokenizer.decode(output, skip_special_tokens=True) for output in outputs
-            ]
+            response = [self.tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
             return response
         except Exception as e:
             # logs error if an exception occurs during code generation

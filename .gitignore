@@ -62,4 +62,5 @@ cover/
 
 # Cache files
 .cache/
-tmp/
+tmp/*
+!tmp/.gitkeep
