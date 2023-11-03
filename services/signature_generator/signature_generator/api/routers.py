@@ -13,5 +13,11 @@ async def generate_signature(data: SignatureInput) -> object:
     """
     generator = SignatureGenerator(get_model_endpoint(data.model_name))
     prompt = generate_prompt("signature", spec=data.open_api_spec, instruction=data.instruction)
-    generated_signature = generator.generate(prompt)
-    return {"generated_signature": generated_signature}
+    signature = generator.generate(prompt)[0]
+
+    end_tokens = "==="
+
+    if end_tokens in signature:
+        signature = signature[: signature.find(end_tokens)]
+
+    return {"generated_signature": signature}

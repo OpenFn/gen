@@ -1,6 +1,38 @@
 prompts = {
     "greeting": "Hello, my name is {name}. I am {age} years old and I live in {location}.",
-    "signature": """ /*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State has a configuration and an optional object.*/
+    "signature": """/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State has a configuration and a data object.*/
+    OpenAPI Spec:
+    GET /fact
+    Response 200:
+    - CatFact:
+      fact: string
+      length: number
+
+    Instruction:
+    Get a random cat fact.
+
+    Output Signature:
+    /**
+    * Retrieves a random cat fact and includes it in the state data.
+    * Sends a GET request to the /fact endpoint of Cat.
+    * @parameter callback {{Function}} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from Cat
+    * @returns A function that updates the state with the retrieved cat fact.
+    */
+    declare function GetRandomCatFact(callback: (fn: (inState: State) => State)): (outState: State) => State;
+    type CatFact = {{ fact: string; length: number; }};
+
+    type State<C = {{}}, D = {{}}> = {{ configuration: C; data: CatFact;}};
+
+    ===
+
+    OpenAPI Spec:{spec}
+
+    Instruction:{instruction}
+
+    Output Signature:
+
+    """,
+    "signature_default": """/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State has a configuration and an optional object.*/
     OpenAPI Spec:
     GET /fact
     Response 200:
@@ -16,13 +48,14 @@ prompts = {
     type CatFact = {{ fact: string; length: number; }};
     type State = {{ configuration: {{ [key: string]: any }}; catFact?: CatFact;}};
 
+    ===
 
     OpenAPI Spec:{spec}
 
     Instruction:{instruction}
 
     Output Signature:
-    #
+
     """,
     "api_spec": """
     OpenAPI Spec:
@@ -76,6 +109,9 @@ prompts = {
     - CatFact:
         fact: string
         length: number
+
+
+    ===
 
     Input:
     OpenAPI Spec:
