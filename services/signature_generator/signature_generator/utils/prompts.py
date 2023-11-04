@@ -25,9 +25,11 @@ prompts = {
 
     ===
 
-    OpenAPI Spec:{spec}
+    OpenAPI Spec:
+    {spec}
 
-    Instruction:{instruction}
+    Instruction:
+    {instruction}
 
     Output Signature:
 

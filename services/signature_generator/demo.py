@@ -15,6 +15,7 @@ Response 200:
 """
 
 instruction = """Get a random cat."""
+instruction_taylor = """Create an OpenFn function that accesses the /getcat endpoint"""
 
 data = {"open_api_spec": spec, "instruction": instruction, "model_name": "gpt3"}
 data_default = {"open_api_spec": spec, "instruction": instruction}
