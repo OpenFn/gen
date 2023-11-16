@@ -1,89 +1,110 @@
 prompts = {
     "greeting": "Hello, my name is {name}. I am {age} years old and I live in {location}.",
-    "signature": """ /*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State has a configuration and an optional object.*/
+    "signature": """/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State has a configuration and a data object.*/
     OpenAPI Spec:
     GET /fact
+    Parameters:
+    - max_length: integer
     Response 200:
     - CatFact:
-      fact: string
-      length: number
+        fact: string
+        length: integer
 
     Instruction:
-    Get a random cat fact.
+    Create an OpenFn function that reads from the /fact endpoint
 
     Output Signature:
-    declare function GetRandomCatFact(callback: (fn: (state: State) => State)): (state: State) => State;
+    /**
+    * Retrieves a fact on cats and includes it in the state data.
+    * Sends a GET request to the /fact endpoint of Cat.
+    * @parameter callback {{Function}} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from Cat
+    * @returns A function that updates the state with the retrieved cat fact.
+    */
+    declare function GetCatFact(callback: (fn: (inState: State) => State)): (outState: State) => State;
     type CatFact = {{ fact: string; length: number; }};
-    type State = {{ configuration: {{ [key: string]: any }}; catFact?: CatFact;}};
 
+    type State<C = {{}}, D = {{}}> = {{ configuration: C; data: CatFact;}};
 
-    OpenAPI Spec:{spec}
+    ===
 
-    Instruction:{instruction}
+    OpenAPI Spec:
+    {spec}
+
+    Instruction:
+    {instruction}
 
     Output Signature:
-    #
     """,
-    "api_spec": """
+    "api_spec": """/*Extract an endpoint path, request type and its corresponding parameters and response details from OpenAPI spec. Find these based on the given Instruction*/
     OpenAPI Spec:
-    {
+    {{
     "openapi": "3.0.0",
-    "info": {
+    "info": {{
         "title": "Random Cat Fact API",
         "version": "1.0.0",
         "description": "API for retrieving random facts about cats."
-    },
-    "paths": {
-        "/fact": {
-        "get": {
+    }},
+    "paths": {{
+        "/fact": {{
+        "get": {{
             "summary": "Get a random cat fact",
-            "responses": {
-            "200": {
+            "responses": {{
+            "200": {{
                 "description": "Successful response",
-                "content": {
-                "application/json": {
-                    "schema": {
+                "content": {{
+                "application/json": {{
+                    "schema": {{
                     "$ref": "#/components/schemas/CatFact"
-                    }
-                }
-                }
-            }
-            }
-        }
-        }
-    },
-    "components": {
-        "schemas": {
-        "CatFact": {
+                    }}
+                }}
+                }}
+            }}
+            }}
+        }}
+        }}
+    }},
+    "components": {{
+        "schemas": {{
+        "CatFact": {{
             "type": "object",
-            "properties": {
-            "fact": {
+            "properties": {{
+            "fact": {{
                 "type": "string"
-            },
-            "length": {
+            }},
+            "length": {{
                 "type": "number"
-            }
-            }
-        }
-        }
-    }
-    }
+            }}
+            }}
+        }}
+        }}
+    }}
+    }}
+
+    Instruction:
+    Get any fact on cats.
 
     Output:
     OpenAPI Spec:
     GET /fact
+    Parameters:
+    - max_length: integer
     Response 200:
     - CatFact:
-        fact: string
-        length: number
+    fact: string
+    length: integer
+
+
+    ===
 
     Input:
     OpenAPI Spec:
     {full_spec}
 
+    Instruction:
+    {instruction}
+
     Output:
     """,
-    # Add more prompts here
 }
 
 

@@ -3,6 +3,7 @@
 
 # Poetry specific files and directories
 poetry.lock
+.poetry/
 __pypackages__/
 
 # Byte-compiled / optimized / DLL files
@@ -63,3 +64,5 @@ cover/
 # Cache files
 .cache/
 tmp/
+
+app.log

@@ -1,14 +1,14 @@
+import logging
+
 import requests
 
+logger = logging.getLogger(__name__)
+
 # Define the URL of the FastAPI endpoint
-endpoint_url = "http://localhost:8002/gpt3/generate_code/"
+endpoint_url = "http://localhost:8004/generate_code/"
 
-input_data = {"text": "def greet(user): print(f'hello <extra_id_0>!')"}
-input_data2 = {"text": "Generate Javascript: get weather for a city"}
-prompt = {
-    "prompt": """
-Generate TypeScript implementation for the function below:
-
+data = {
+    "signature": """
 /**
     * Retrieves a list of breeds and includes it in the state data.
     * Sends a GET request to the /breeds endpoint.
@@ -16,9 +16,11 @@ Generate TypeScript implementation for the function below:
     * @returns A function that updates the state with the retrieved list of breeds.
     */
     declare function GetCatBreeds(callback: (fn: (inState: State) => State)): (outState: State) => State;
-    type Breed = {{ breed: string; country: string; origin: string; coat: string; pattern: string; }};
+        type Breed = {{ breed: string; country: string; origin: string; coat: string; pattern: string; }};
 
     type State<C = {{}}, D = {{}}> = {{ configuration: C; data: Breed[];}};
 """,
 }
-response = requests.post(endpoint_url, json=prompt)
+
+response = requests.post(endpoint_url, json=data)
+# results in response json() ["implementation"]

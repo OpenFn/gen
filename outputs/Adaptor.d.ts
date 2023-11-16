@@ -5,22 +5,26 @@ declare function GetRandomCat(callback: (fn: (state: State) => State)): (state: 
 type Cat = { name: string; age: number; };
 type State = { configuration: { [key: string]: any }; cat: Cat; };
 
-// Output 2 (contains unneed info, hence in comment)
-/*
-declare function GetRandomCat(callback: (fn: (state: State) => State)): (state: State) => State;
-type Cat = { name: string; age: number; };
-type State = { configuration: { [key: string]: any }; cat: Cat;};
-
-OpenAPI Spec:
-GET /cat/{name}
-Response 200:
-- Cat:
-name: string
-age: number
-
-Instruction:Get a random cat by name.
-Output Signature:
-declare function GetRandomCatByName(callback: (fn: (state: State) => State)): (state: State) => State;
-type Cat = { name: string; age: number; };\n\ntype State = { configuration: { [key: string]: any }; cat: Cat;};
-OpenAPI Spec:\nPOST /cat\nResponse 201:\n- Cat:\n    name: string\n    age: number\n\n\n    Instruction:Create a new cat. \n
+// Output 2
+/* Retrieves a random cat and includes it in the state data.
+* Sends a GET request to the /cat endpoint of Cat.
+* @parameter callback {Function} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from Cat
+* @returns A function that updates the state with the retrieved cat.
 */
+declare function GetRandomCat(callback: (fn: (inState: State) => State)): (outState: State) => State;
+type Cat = { name: string; age: number; };
+
+type State<C = {}, D = {}> = { configuration: C; data: D;};
+
+
+// Output 3
+/**
+    * Retrieves a random cat and includes it in the state data.
+    * Sends a GET request to the /cat endpoint of Cat.
+    * @parameter callback {Function} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from Cat
+    * @returns A function that updates the state with the retrieved cat.
+    */
+declare function GetRandomCat(callback: (fn: (inState: State) => State)): (outState: State) => State;
+type Cat = { name: string; age: number; };
+
+type State<C = {}, D = {}> = { configuration: C; data: Cat;};
