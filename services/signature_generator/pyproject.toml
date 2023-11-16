@@ -7,8 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.104.1"
 requests = "^2.31.0"
+fastapi = "^0.104.0"
+spacy = "^3.7.2"
+pathlib = "^1.0.1"
 
 
 [tool.poetry.group.dev.dependencies]

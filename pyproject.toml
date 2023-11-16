@@ -8,6 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+requests = "^2.31.0"
 
 
 [build-system]
@@ -46,6 +47,7 @@ ignore = [
     "ANN101", # Missing type annotation for self in method
     "ANN204", # Missing type annotation for special method
     "ANN003", # Missing type annotation for `**kwargs`
+    "UP007", # Use `X | Y` for type annotations instead of Union
     "E501",
 ]
 line-length = 120

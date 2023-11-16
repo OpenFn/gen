@@ -1,12 +1,9 @@
-from typing import Union
-
 import requests
+from code_generator.utils.constants import SUCCESS_CODE
 from pydantic import BaseModel
 
-from signature_generator.utils.constants import SUCCESS_CODE
 
-
-class SignatureGenerator:
+class CodeGenerator:
     def __init__(self, endpoint_url: str):
         self.endpoint_url = endpoint_url
 
@@ -25,7 +22,6 @@ class SignatureGenerator:
             return f"An error occurred: {e}"
 
 
-class SignatureInput(BaseModel):
-    open_api_spec: Union[str, dict]
-    instruction: str
-    model: str = "codet5"
+class CodeInput(BaseModel):
+    signature: str
+    model: str = "gpt3"
