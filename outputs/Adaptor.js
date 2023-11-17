@@ -179,3 +179,25 @@
 //     return callback(newState);
 //   };
 // }
+
+
+// V11
+// - JS instead of TS
+
+// /**
+//  * Retrieves a list of breeds and includes it in the state data.
+//  * Sends a GET request to the /breeds endpoint.
+//  * @parameter callback {Function} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from the endpoint
+//  * @returns A function that updates the state with the retrieved list of breeds.
+//  */
+// import { http } from "@openfn/language-common";
+
+// const getBreeds = async (callback: (fn: (inState: State) => State)): (outState: State) => State => {
+//   return async (outState: State): Promise<State> => {
+//     const { baseUrl } = outState.configuration;
+//     const response = await http.get(`${baseUrl}/breeds`);
+//     const data = response.data as Breed[];
+//     const newState = { ...outState, data: data };
+//     return callback(newState);
+//   };
+// };
