@@ -16,7 +16,7 @@ prompts = {
     ],
     "code_text_original": "Generate a TypeScript implementation for the function in the signature below. The comments above the function describe what it does\n\n ==== \n\nSignature:\n{signature}\nCode:\n ====",
     "code_text": """
-Generate TypeScript implementation for the function signature below. The comments above the function signature describe what it does.
+Generate JavaScript implementation for the function signature below. The comments above the function signature describe what it does.
 Guides:
 - Use async/await instead of promise chains.
 - Create a new state via spread syntax: `const newState = {{ ...state, data: data }}`.

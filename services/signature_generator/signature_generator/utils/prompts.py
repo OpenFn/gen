@@ -22,7 +22,7 @@ prompts = {
     */
     declare function getCatFact(callback: (fn: (inState: State) => State)): (outState: State) => State;
     type CatFact = {{ fact: string; length: number; }};
-    type C = {{url : string;}}
+    type C = {{baseUrl : string;}}
     type State<C = {{}}, D = {{}}> = {{ configuration: C; data: CatFact;}};
     ===
 
