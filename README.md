@@ -6,11 +6,13 @@ This repository contains a Python application that utilizes AI models to generat
 
 The project architecture is designed as a two-tier system. The first tier (current repo) handles the request processing, interacts with the API, and triggers the AI models. The second tier hosts AI inference and utilises the received preprocessed data to execute an AI model inference. The architecture diagram below provides an overview of the system:
 
-![Architecture Diagram](./assets/system-proposal.png)
+![Architecture Diagram](./assets/system-architecture.png)
 
 
 
 ## Installation
+
+To set up the project and ensure proper functionality, follow these steps:
 
 1. Clone the repository to your local machine:
 
@@ -18,10 +20,10 @@ The project architecture is designed as a two-tier system. The first tier (curre
    git clone https://github.com/OpenFn/gen.git
    ```
 
-2. Navigate to the project directory:
+2. Navigate to the desired module's directory:
 
    ```bash
-   cd ai-code-generation
+   cd services/<module>
    ```
 
 3. Install the required dependencies using Poetry:
@@ -30,15 +32,45 @@ The project architecture is designed as a two-tier system. The first tier (curre
    poetry install
    ```
 
+Repeat these steps for each module under the `services` directory that you want to use.
 ## Usage
 
-Run the main application using the following command:
+## Starting Services
+
+You can initiate each service using the following steps:
+
+1. Navigate to the desired service module:
+
+   ```bash
+   cd services/<module>
+   ```
+
+2. Run the service using Poetry:
+
+   ```bash
+   poetry run ./run.sh
+   ```
+
+Additionally, each module includes a `demo.py` file that can be executed. To run the entire flow:
+
+1. Navigate to the `services` directory:
+
+   ```bash
+   cd services/<module>
+   ```
+
+2. Run the demo:
+
+   ```bash
+   poetry run python demo.py
+   ```
+
+To execute the entire process and handle requests from the specified OpenAPI spec and instructions, employing AI models for both signature and code generation, and delivering the generated code as a response, run the following command:
 
 ```bash
-poetry run python main.py
+cd services/
+poetry run python demo.py
 ```
-
-The application will start processing requests from the specified API URL, utilize the AI models for code generation, and provide the generated code as a response.
 
 ## Project Structure
 
