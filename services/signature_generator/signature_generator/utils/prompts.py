@@ -1,6 +1,6 @@
 prompts = {
     "greeting": "Hello, my name is {name}. I am {age} years old and I live in {location}.",
-    "signature": """/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State has a configuration and a data object.*/
+    "signature": """/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State is configurable, has at least a configuration and a data object. Configuration contains url, among other parameters*/
     OpenAPI Spec:
     GET /fact
     Parameters:
@@ -20,11 +20,10 @@ prompts = {
     * @parameter callback {{Function}} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from Cat
     * @returns A function that updates the state with the retrieved cat fact.
     */
-    declare function GetCatFact(callback: (fn: (inState: State) => State)): (outState: State) => State;
+    declare function getCatFact(callback: (fn: (inState: State) => State)): (outState: State) => State;
     type CatFact = {{ fact: string; length: number; }};
-
+    type C = {{url : string;}}
     type State<C = {{}}, D = {{}}> = {{ configuration: C; data: CatFact;}};
-
     ===
 
     OpenAPI Spec:
