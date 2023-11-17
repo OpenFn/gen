@@ -30,6 +30,8 @@ response = requests.post(end_point_signature, json=data_full)
 
 # Generate code
 signature = response.json()["signature"]
+# print signature
 data = {"signature": signature}
+
 response = requests.post(end_point_code, json=data)
 # commented due to linting: results in response json() ["implementation"]

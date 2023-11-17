@@ -16,7 +16,6 @@ async def generate_code(data: CodeInput) -> object:
     Generate code implementation for a given OpenAPI spec and instruction.
     """
     generator = CodeGenerator(get_model_endpoint(data.model))
-
     prompt = generate_prompt("code_text", signature=data.signature)
     signature = generator.generate(prompt)[0]
 
