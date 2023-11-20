@@ -21,6 +21,7 @@ Guides:
 - Use async/await instead of promise chains.
 - Create a new state via spread syntax: `const newState = {{ ...state, data: data }}`.
 - Ensure you import and use http from @openfn/language-common for HTTP requests (assume available).
-- Copy the comments (see /**/) and include before function definition.
-- Do not include the given type and function definitions in the output.\n\nSignature:\n{signature}\nCode:\n ====""",
+- Copy the comments (see /**/) and include right above function definition.
+- Start with any imports.
+- Code should contain only JS, functions, and imports. No type definition. \n\nSignature:\n{signature}\nCode:\n ====""",
 }

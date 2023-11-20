@@ -10,7 +10,7 @@ end_point_code = "http://localhost:8004/generate_code/"
 
 
 # Opening JSON file
-file_path = Path("signature_generator/tmp/spec.json")
+file_path = Path("signature_generator/assets/spec.json")
 with file_path.open("r") as file:
     full_spec = json.load(file)
 
@@ -25,6 +25,7 @@ data_full = {
 
 # Generate signature
 response = requests.post(end_point_signature, json=data_full)
+print(response.json()["signature"])
 # commented due to linting: results in response json() ["signature"]
 
 
@@ -33,4 +34,5 @@ signature = response.json()["signature"]
 data = {"signature": signature}
 
 response = requests.post(end_point_code, json=data)
+print(f'\nImplementation:\n{response.json()["implementation"]}')
 # commented due to linting: results in response json() ["implementation"]
