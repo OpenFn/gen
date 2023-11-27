@@ -65,4 +65,6 @@ cover/
 .cache/
 tmp/
 
+services/inference/data/
+
 app.log
