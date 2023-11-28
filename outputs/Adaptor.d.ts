@@ -1,5 +1,3 @@
-// Paste the output of the "signature" step here.
-
 // Latest
 /**
    * Retrieves a list of breeds and includes it in the state data.
