@@ -10,6 +10,7 @@ end_point_code = "http://localhost:8004/generate_code/"
 
 samples = [
     'cat-facts',
+    # TODO - isma to uncomment, add spec, and run demo
     # 'mailchimp'
 ]
 
