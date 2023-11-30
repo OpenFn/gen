@@ -1,4 +1,44 @@
-2023-11-17 06:46:57,109 ERROR inference.models.gpt3 An error occurred during GPT-3 completion: No API key provided. You can set your API key in code using 'openai.api_key = <API-KEY>', or you can set the environment variable OPENAI_API_KEY=<API-KEY>). If your API key is stored in a file, you can point the openai module at it with 'openai.api_key_path = <PATH>'. You can generate API keys in the OpenAI web interface. See https://platform.openai.com/account/api-keys for details.
-2023-11-17 06:46:57,109 ERROR inference.api.gpt3 An error occurred during code generation: 
-2023-11-17 06:47:42,892 ERROR inference.models.gpt3 An error occurred during GPT-3 completion: No API key provided. You can set your API key in code using 'openai.api_key = <API-KEY>', or you can set the environment variable OPENAI_API_KEY=<API-KEY>). If your API key is stored in a file, you can point the openai module at it with 'openai.api_key_path = <PATH>'. You can generate API keys in the OpenAI web interface. See https://platform.openai.com/account/api-keys for details.
-2023-11-17 06:47:42,892 ERROR inference.api.gpt3 An error occurred during code generation: 
+2023-11-30 08:59:37,215 ERROR inference.models.gpt3 An error occurred during GPT-3 completion: 
+
+You tried to access openai.Completion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2023-11-30 08:59:37,215 ERROR inference.api.gpt3 An error occurred during code generation: 
+2023-11-30 08:59:37,221 ERROR inference.models.gpt3 An error occurred during GPT-3 completion: 
+
+You tried to access openai.Completion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2023-11-30 08:59:37,221 ERROR inference.api.gpt3 An error occurred during code generation: 
+2023-11-30 09:03:08,095 ERROR inference.models.gpt3 An error occurred during GPT-3 completion: 
+
+You tried to access openai.Completion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2023-11-30 09:03:08,095 ERROR inference.api.gpt3 An error occurred during code generation: 
+2023-11-30 09:03:08,108 ERROR inference.models.gpt3 An error occurred during GPT-3 completion: 
+
+You tried to access openai.Completion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2023-11-30 09:03:08,108 ERROR inference.api.gpt3 An error occurred during code generation: 

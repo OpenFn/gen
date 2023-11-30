@@ -18,13 +18,19 @@ To set up the project and ensure proper functionality, follow these steps:
    git clone https://github.com/OpenFn/gen.git
    ```
 
-2. Navigate to the desired module's directory:
+2. Copy the example env and set your API keys as required:
+
+   ```bash
+   cp ./services/inference/.env.example ./services/inference/.env
+   ```
+
+3. Navigate to the desired module's directory:
 
    ```bash
    cd services/<module>
    ```
 
-3. Install the required dependencies using Poetry:
+4. Install the required dependencies using Poetry:
 
    ```bash
    poetry install
