@@ -13,7 +13,7 @@ gpt3 = GPT3Turbo()
 
 
 @router.post("/generate_code")
-def generate_code(input_data) -> CodeOutput:
+def generate_code(input_data: MessageInput) -> CodeOutput:
     """
     Generate code based on the provided input text using the GPT-3 model.
     The function handles HTTP POST requests and returns the generated code,
@@ -21,10 +21,10 @@ def generate_code(input_data) -> CodeOutput:
     """
 
     try:
-        print(input_data)
-        print(type(input_data))
-        messages = input_data.messages
+        print("messages", type(input_data))
+        messages = input_data.prompt
         print("messages", messages)
+        print("messages", type(messages))
         generated_code = gpt3.generate(messages)
         if generated_code is None:
             raise HTTPException(

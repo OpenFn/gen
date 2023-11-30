@@ -5,8 +5,13 @@ class PromptInput(BaseModel):
     prompt: str
 
 
+class RoleData(BaseModel):
+    role: str
+    content: str
+
+
 class MessageInput(BaseModel):
-    messages: list[dict]
+    prompt: list[RoleData]
 
 
 class CodeOutput(BaseModel):
