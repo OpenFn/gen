@@ -5,6 +5,10 @@ class PromptInput(BaseModel):
     prompt: str
 
 
+class MessageInput(BaseModel):
+    messages: list[dict]
+
+
 class CodeOutput(BaseModel):
     generated_code: list[str]
 

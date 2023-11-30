@@ -1,6 +1,40 @@
 prompts = {
-    "greeting": "Hello, my name is {name}. I am {age} years old and I live in {location}.",
-    "signature": """/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State is configurable, has at least a configuration and a data object. Configuration contains url, among other parameters*/
+    "signature": [
+        {
+            "role": "system",
+            "content": """
+/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State is configurable, has at least a configuration and a data object. Configuration contains url, among other parameters. Below is an example*/
+OpenAPI Spec:
+GET /fact
+Parameters:
+- max_length: integer
+Response 200:
+- CatFact:
+    fact: string
+    length: integer
+
+Instruction:
+Create an OpenFn function that reads from the /fact endpoint
+
+Output Signature:
+/**
+* Retrieves a fact on cats and includes it in the state data.
+* Sends a GET request to the /fact endpoint of Cat.
+* @parameter callback {{Function}} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from Cat
+* @returns A function that updates the state with the retrieved cat fact.
+*/
+declare function getCatFact(callback: (fn: (inState: State) => State)): (outState: State) => State;
+type CatFact = {{ fact: string; length: number; }};
+type C = {{baseUrl : string;}}
+type State<C = {{}}, D = {{}}> = {{ configuration: C; data: CatFact;}};
+===""",
+        },
+        {
+            "role": "user",
+            "content": "\n\nOpenAPI Spec:\n{spec}\n\nInstruction:\n{instruction}\n\nOutput Signature:",
+        },
+    ],
+    "signature_text": """/*Write an Output Signature (function and type) based on OpenAPI Spec and Instruction. Type State is configurable, has at least a configuration and a data object. Configuration contains url, among other parameters*/
     OpenAPI Spec:
     GET /fact
     Parameters:
@@ -112,4 +146,10 @@ def generate_prompt(prompt_name: str, **kwargs) -> str:
     if prompt_template is None:
         raise ValueError(f"Prompt '{prompt_name}' not found.")
     encoded_kwargs = {k: v.replace("\\n", "\n") for k, v in kwargs.items()}
-    return prompt_template.format(**encoded_kwargs)
+    if prompt_name == "signature":
+        prompt_template[1]["content"] = prompt_template[1]["content"].format(
+            **encoded_kwargs
+        )
+    else:
+        prompt_template = prompt_template.format(**encoded_kwargs)
+    return prompt_template

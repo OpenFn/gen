@@ -20,7 +20,7 @@ instruction = """Create an OpenFn function that accesses the /breeds endpoint"""
 data_full = {
     "open_api_spec": full_spec,
     "instruction": instruction,
-    "model": "gpt3",
+    "model": "gpt3_turbo",
 }
 
 # Generate signature
@@ -31,7 +31,7 @@ print(response.json()["signature"])
 
 # Generate code
 signature = response.json()["signature"]
-data = {"signature": signature}
+data = {"signature": signature, "model": "gpt3_turbo"}
 
 response = requests.post(end_point_code, json=data)
 print(f'\nImplementation:\n{response.json()["implementation"]}')

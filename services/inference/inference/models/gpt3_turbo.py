@@ -30,6 +30,7 @@ class GPT3Turbo:
                 temperature=0,
                 max_tokens=max_tokens,
             )
+            print(response.choices[0].message["content"])
             return response.choices[0].message["content"].strip()
         except Exception as e:
             logger.error(f"An error occurred during GPT-3.5 Turbo completion: {e}")

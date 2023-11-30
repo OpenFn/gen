@@ -20,8 +20,10 @@ async def generate_signature(data: SignatureInput) -> object:
     Generate signature for a given OpenAPI spec and instruction.
     """
     generator = SignatureGenerator(get_model_endpoint(data.model))
+    prompt_template = "signature" if data.model == "gpt3_turbo" else "signature_text"
+    print(prompt_template)
     prompt = generate_prompt(
-        "signature",
+        prompt_template,
         spec=data.open_api_spec,
         instruction=data.instruction,
     )
@@ -44,7 +46,11 @@ async def generate_signature_v2(data: SignatureInput) -> object:
 
     parsed_spec = parse_openapi_spec(data.open_api_spec)
     api_info = extract_api_info(parsed_spec, data.instruction)
-    prompt = generate_prompt("signature", spec=api_info, instruction=data.instruction)
+    prompt_template = "signature" if data.model == "gpt3_turbo" else "signature_text"
+    print(f"prompt_template : {prompt_template}")
+    prompt = generate_prompt(
+        prompt_template, spec=api_info, instruction=data.instruction
+    )
     signature = generator.generate(prompt)[0]
 
     end_tokens = "==="
