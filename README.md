@@ -1,14 +1,12 @@
 # Built-time AI Code Generation from API
 
-This repository contains a Python application that utilizes AI models to generate code based on instructions received through an API URL. The application processes the instructions, runs the relevant AI models, and returns the generated code as a response. 
+This repository contains a Python application that utilizes AI models to generate code based on instructions received through an API URL. The application processes the instructions, runs the relevant AI models, and returns the generated code as a response.
 
 ## Project Architecture
 
 The project architecture is designed as a two-tier system. The first tier (current repo) handles the request processing, interacts with the API, and triggers the AI models. The second tier hosts AI inference and utilises the received preprocessed data to execute an AI model inference. The architecture diagram below provides an overview of the system:
 
 ![Architecture Diagram](./assets/system-architecture.png)
-
-
 
 ## Installation
 
@@ -33,6 +31,7 @@ To set up the project and ensure proper functionality, follow these steps:
    ```
 
 Repeat these steps for each module under the `services` directory that you want to use.
+
 ## Usage
 
 ## Starting Services
