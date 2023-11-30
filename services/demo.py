@@ -44,8 +44,8 @@ for i in samples:
 
     # Generate code
     data = {"signature": signature, "model": "gpt3_turbo"}
-    response = requests.post(end_point_code, json=data)
-    implementation = response.json()["implementation"]
+    response2 = requests.post(end_point_code, json=data)
+    implementation = response2.json()["implementation"]
 
     print(f'\nImplementation:\n{implementation}')
 
