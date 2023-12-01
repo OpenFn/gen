@@ -165,6 +165,7 @@ def extract_api_info(api_spec: dict, instruction: str) -> dict[str, any]:
         "list": "GET",
         "retrieve": "GET",
         "modify": "PUT",
+        "add": "POST",
         # Add more mappings as needed
     }
 

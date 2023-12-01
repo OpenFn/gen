@@ -2,8 +2,11 @@ def generate_prompt(prompt_name: str, signature: str, **kwargs) -> str:
     prompt_template = prompts.get(prompt_name)
     if prompt_template is None:
         raise ValueError(f"Prompt '{prompt_name}' not found.")
-    encoded_kwargs = {k: v.replace("\\n", "\n") for k, v in kwargs.items()}
+    encoded_kwargs = {k: v.replace("{", "{{") for k, v in kwargs.items()}
+    encoded_kwargs = {k: v.replace("}", "}}") for k, v in kwargs.items()}
     if prompt_name == "code":
+        print("signature")
+        print(signature)
         prompt_template[1]["content"] = prompt_template[1]["content"].format(
             signature=signature
         )
