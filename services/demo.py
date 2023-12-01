@@ -23,8 +23,10 @@ for i in samples:
     with spec_path.open("r") as file:
         full_spec = json.load(file)
 
+    instruction_path = base_path / "instruction.txt"
 
-    instruction = """Create an OpenFn function that accesses the /breeds endpoint"""
+    with open(instruction_path) as file2:
+        instruction = file2.read()
 
     data_full = {
         "open_api_spec": full_spec,
