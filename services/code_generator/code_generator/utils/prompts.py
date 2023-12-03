@@ -2,16 +2,27 @@ def generate_prompt(prompt_name: str, signature: str, **kwargs) -> str:
     prompt_template = prompts.get(prompt_name)
     if prompt_template is None:
         raise ValueError(f"Prompt '{prompt_name}' not found.")
-    encoded_kwargs = {k: v.replace("{", "{{") for k, v in kwargs.items()}
-    encoded_kwargs = {k: v.replace("}", "}}") for k, v in kwargs.items()}
+    print("\nbef sig")
+    print(signature)
+    # signature = signature.replace("}", "}}").replace("{", "{{")
+    print("\nafter sig")
+    print(signature)
     if prompt_name == "code":
         print("signature")
         print(signature)
+        print(prompt_template[0]["role"])
+        print(prompt_template[0]["content"])
+        print(prompt_template[1]["role"])
+        print(prompt_template[1]["content"])
         prompt_template[1]["content"] = prompt_template[1]["content"].format(
             signature=signature
         )
+        prompt_template[1]["content"] = (
+            prompt_template[1]["content"].replace("}}", "}").replace("{{", "{")
+        )
     else:
         prompt_template = prompt_template.format(signature=signature)
+        prompt_template = prompt_template.replace("}}", "}").replace("{{", "{")
     return prompt_template
 
 
@@ -23,7 +34,7 @@ prompts = {
 Generate JavaScript implementation for the function signature below. The comments above the function signature describe what it does.
 Guides:
 - Use async/await instead of promise chains.
-- Create a new state via spread syntax: `const newState = {{ ...state, data: data }}`.
+- Create a new state via spread syntax: `const newState = { ...state, data: data }`.
 - Ensure you import and use http from @openfn/language-common for HTTP requests (assume available).
 - Copy the comments (see /**/) and include right above function definition.
 - Start with any imports.

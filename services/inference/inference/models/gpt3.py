@@ -15,8 +15,9 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 class GPT3:
     def __init__(self, open_api_key: str = OPENAI_API_KEY):
+        self.model_name = "text-davinci-003"
         self.api_key = open_api_key
-        
+        logger.info(f"Model {self.model_name} loaded.")
 
     def generate(self, prompt: str, max_tokens: int = 256) -> str:
         """
@@ -27,10 +28,12 @@ class GPT3:
         """
         try:
             logger.info("Generating")
-            response = client.completions.create(engine="text-davinci-003",  # gpt-4-0613 # Specify the GPT-3 engine to use
-            prompt=prompt,
-            max_tokens=max_tokens,
-            temperature=0)
+            response = client.completions.create(
+                engine="text-davinci-003",
+                prompt=prompt,
+                max_tokens=max_tokens,
+                temperature=0,
+            )
             return response.choices[0].text
         except Exception as e:
             logger.error(f"An error occurred during GPT-3 completion: {e}")

@@ -19,6 +19,6 @@ async def generate_code(data: CodeInput) -> object:
     prompt_template = "code" if data.model == "gpt3_turbo" else "code_text"
     print(prompt_template)
     prompt = generate_prompt(prompt_template, signature=data.signature)
-    signature = generator.generate(prompt)[0]
+    code = generator.generate(prompt)[0]
 
-    return {"implementation": signature}
+    return {"implementation": code}

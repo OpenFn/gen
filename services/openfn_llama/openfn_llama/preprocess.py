@@ -1,8 +1,3 @@
-# from datasets import load_dataset
-
-# train_dataset = load_dataset("json", data_files="data/alpaca_data.json")
-# print(train_dataset)
-# # eval_dataset = load_dataset('json', data_files='notes_validation.jsonl', split='train')
 import requests
 import json
 import os
@@ -10,24 +5,24 @@ import re
 from utils.utils import split_json_dataset
 from utils.prompts import implementation_template
 
-root_directory = "/Users/isma/Documents/OpenFN/onboarding/adaptors/packages"
+OPENFN_PACKAGES = "/Users/isma/Documents/OpenFN/onboarding/adaptors/packages"
 OUTPUT_PATH = "data/adaptors/adaptor_functions.json"
 DATASET_INSTR = "data/adaptors/adaptor_functions_instr.json"
 DATASET_PROMPT = "data/adaptors/adaptor_functions_prompt_play.json"
 
 
-def read_adaptor_files(root_directory):
+def read_adaptor_files(path_to_packages):
     adaptor_files = {"js": [], "d.ts": []}
 
     packages = [
         d
-        for d in os.listdir(root_directory)
-        if os.path.isdir(os.path.join(root_directory, d))
+        for d in os.listdir(path_to_packages)
+        if os.path.isdir(os.path.join(path_to_packages, d))
     ]
 
     for package in packages:
-        js_path = os.path.join(root_directory, package, "src", "Adaptor.js")
-        dts_path = os.path.join(root_directory, package, "types", "Adaptor.d.ts")
+        js_path = os.path.join(path_to_packages, package, "src", "Adaptor.js")
+        dts_path = os.path.join(path_to_packages, package, "types", "Adaptor.d.ts")
         if os.path.exists(js_path):
             adaptor_files["js"].append(js_path)
 
@@ -241,7 +236,7 @@ def build_prompts(dataset):
     return dataset_with_prompts
 
 
-# adaptor_functions = extract_adaptor_dataset(root_directory)
+# adaptor_functions = extract_adaptor_dataset(OPENFN_PACKAGES)
 
 data = read_json("data/adaptors/adaptor_functions_prompts.json")
 print(len(data))
