@@ -9,6 +9,7 @@ OPENFN_PACKAGES = "/Users/isma/Documents/OpenFN/onboarding/adaptors/packages"
 OUTPUT_PATH = "data/adaptors/adaptor_functions.json"
 DATASET_INSTR = "data/adaptors/adaptor_functions_instr.json"
 DATASET_PROMPT = "data/adaptors/adaptor_functions_prompt_play.json"
+TMP_PATH = "data/adaptors/test_functions.json"
 
 
 def read_adaptor_files(path_to_packages):
@@ -126,6 +127,12 @@ def extract_functions_with_regex(file_content, imports=True):
             }
         )
 
+    if imports:
+        print("Print fns\n", "-" * 10)
+        for fn in functions:
+            print(f"\nFunction : {fn['name']}")
+            print(f"\nCode :\n {fn['code']}\n")
+
     return functions
 
 
@@ -158,27 +165,31 @@ def extract_adaptor_dataset(
         # dts_file = "/Users/isma/Documents/OpenFN/onboarding/adaptors/packages/twilio/types/Adaptor.d.ts"
         js_content = read_file(js_file)
         dts_content = read_file(dts_file)
+        extract_rest_functions(js_content)
+        exit()
 
         implementations = extract_functions_with_regex(js_content)
         signatures = extract_functions_with_regex(dts_content, imports=False)
         num = num + len(implementations)
         tests = None
         test_file = js_file.replace("/src/Adaptor.js", "/test/Adaptor.test.js")
-        exist = os.path.exists(test_file)
         if os.path.exists(test_file):
             test_content = read_file(test_file)
             tests = extract_tests(test_content)
-            print("\n", test_file)
-        print()
-        exit()
+        # exit()
         adaptor_functions = merge_signatures_with_implementations(
             signatures, implementations, tests
         )
         dataset.extend(adaptor_functions)
-    save_as_json(dataset, output_path)
+    # save_as_json(dataset, output_path)
     print("LENGTH \n\n", len(dataset))
     print("Len Imp", num)
     return dataset
+
+
+def extract_rest_functions(js_content: str):
+    print(js_content)
+    return
 
 
 def generate_instructions(implementations: list[str]):
@@ -236,15 +247,15 @@ def build_prompts(dataset):
     return dataset_with_prompts
 
 
-# adaptor_functions = extract_adaptor_dataset(OPENFN_PACKAGES)
+adaptor_functions = extract_adaptor_dataset(OPENFN_PACKAGES, TMP_PATH)
 
-data = read_json("data/adaptors/adaptor_functions_prompts.json")
-print(len(data))
-train_json, test_json = split_json_dataset(data, 0.1)
-print(len(train_json))
-print(len(test_json))
-save_as_json(train_json, "data/processed_data/train.json")
-save_as_json(test_json, "data/processed_data/test.json")
+# data = read_json("data/adaptors/adaptor_functions_prompts.json")
+# print(len(data))
+# train_json, test_json = split_json_dataset(data, 0.1)
+# print(len(train_json))
+# print(len(test_json))
+# save_as_json(train_json, "data/processed_data/train.json")
+# save_as_json(test_json, "data/processed_data/test.json")
 # print(type(data))
 # print(data[1]["signature"])
 # generate_instructions(data)
