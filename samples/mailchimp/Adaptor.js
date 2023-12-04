@@ -1,17 +1,25 @@
 import { http } from '@openfn/language-common';
 
-const addTagToMember = (callback) => async (outState) => {
-  const { list_id, subscriber_hash } = outState.configuration;
-  const url = `/lists/${list_id}/members/${subscriber_hash}/tags`;
-  
-  try {
-    const response = await http.post(url);
-    const newState = { ...outState, data: response.data };
-    return callback(newState);
-  } catch (error) {
-    console.error(error);
-    return outState;
-  }
-};
+export function addTagToListMember(list_id, subscriber_hash, tag, callback) {
+  return state => {
+    const endpoint = `/lists/${list_id}/members/${subscriber_hash}/tags`;
+    const url = state.configuration.baseUrl + endpoint;
+    const body = {
+      tags: [
+        {
+          name: tag,
+          status: 'active'
+        }
+      ]
+    };
 
-export default addTagToMember;
+    return http.post(url, { body })
+      .then(response => {
+        const newState = { ...state, data: response.body };
+        if (callback) {
+          return callback(newState);
+        }
+        return newState;
+      });
+  };
+}

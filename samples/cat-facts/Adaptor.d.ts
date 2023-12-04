@@ -1,11 +1,13 @@
 /**
-* Adds a tag to a member of a list.
-* Sends a POST request to the /lists/{list_id}/members/{subscriber_hash}/tags endpoint of the Mailchimp API.
-* @parameter callback {{Function}} - a callback which is invoked with the resulting state at the end of this operation. Allows users to customise the resulting state. State.data includes the response from the Mailchimp API.
-* @returns A function that updates the state with the response from the Mailchimp API.
-*/
-declare function addTagToMember(callback: (fn: (inState: State) => State)): (outState: State) => State;
-type AddTagToMemberParams = {{ list_id: string; subscriber_hash: string; }};
-type AddTagToMemberResponse = any; // Update with the actual response type from the Mailchimp API
-type C = {{ baseUrl: string; }};
-type State<C = {{}}, D = {{}}> = {{ configuration: C; data: AddTagToMemberResponse; }};
+  * Retrieves a list of cat breeds and includes it in the state data.
+  * Sends a GET request to the /breeds endpoint of Cat.
+  * @example
+  * getCatBreeds(10, callback)
+  * @function
+  * @param {number} limit - Max number of breeds to retrieve
+  * @param {Function} callback - A callback which is invoked with the resulting state at the end of this operation. Allows users to customize the resulting state. State.data includes the response from Cat.
+  * @example <caption>Get a list of cat breeds</caption>
+  * getCatBreeds(10)
+  * @returns {Function} A function that updates the state with the retrieved cat breeds.
+  */
+  export function getCatBreeds(limit?:number, callback?: Function): Operation;
