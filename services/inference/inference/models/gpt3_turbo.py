@@ -12,8 +12,10 @@ OPENAI_API_KEY = os.getenv(
 
 class GPT3Turbo:
     def __init__(self, open_api_key: str = OPENAI_API_KEY):
+        self.model_name = "gpt-3.5-turbo"
         self.api_key = open_api_key
         self.client = OpenAI(api_key=open_api_key)
+        logger.info(f"OpenAI {self.model_name} client loaded.")
 
     def generate(self, messages: list, max_tokens: int = 256) -> str:
         """

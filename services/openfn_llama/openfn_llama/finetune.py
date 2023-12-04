@@ -15,7 +15,7 @@ run_name = "llama2-7b-openfn"
 
 
 class ModelFinetuner:
-    def __init__(self, dataset_name, base_model_name, output_dir="./results"):
+    def __init__(self, dataset_name, base_model_name, output_dir="./models"):
         self.dataset_name = dataset_name
         self.base_model_name = base_model_name
         self.output_dir = output_dir

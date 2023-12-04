@@ -1,15 +1,16 @@
 import { http } from '@openfn/language-common';
 
-const getCatBreeds = (callback) => async (state) => {
+/**
+ * Sends a GET request to a specified URL and returns the response data.
+ * 
+ * @param {string} url - The URL to send the GET request to.
+ * @returns {Promise<any>} - The response data from the GET request.
+ */
+async function getData(url) {
   try {
-    const response = await http.get(`${state.configuration.baseUrl}/breeds`);
-    const data = response.data;
-    const newState = { ...state, data: data };
-    return callback(newState);
+    const response = await http.get(url);
+    return response.data;
   } catch (error) {
-    console.error(error);
-    return state;
+    throw new Error('Internal Server Error');
   }
-};
-
-export default getCatBreeds;
+}

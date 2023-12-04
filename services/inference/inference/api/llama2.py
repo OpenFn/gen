@@ -1,15 +1,15 @@
 import logging
+import requests
 
 from fastapi import APIRouter, HTTPException
 
-from inference.models.llama2 import Llama2_7B
 from inference.schemas.models import CodeOutput, PromptInput
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-# Initialize the llama2 model
-llama2 = Llama2_7B()
+
+llama2_endpoint = "https://9a1b-31-12-82-146.ngrok-free.app/generate_code"
 
 
 @router.post("/generate_code")
@@ -21,14 +21,21 @@ def generate_code(input_data: PromptInput) -> CodeOutput:
     """
 
     try:
-        prompt = input_data.prompt
-        generated_code = llama2.generate(prompt)
-        if generated_code is None:
+        # Assuming input_data is a dictionary with the 'prompt' key
+        payload = {"prompt": input_data.prompt}
+        print(payload)
+        # Send the prompt via POST request to the llama2 endpoint
+        response = requests.post(llama2_endpoint, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Get the generated code from the response
+            generated_code = response.json().get("generated_code")
+            return {"generated_code": generated_code}
+        else:
             raise HTTPException(
-                status_code=500,
-                detail="An error occurred during code generation",
+                status_code=response.status_code,
+                detail=f"Error from llama2 API: {response.text}",
             )
-        return {"generated_code": generated_code}
     except Exception as e:
         logger.error(f"An error occurred during code generation: {e}")
-        raise HTTPException(status_code=500, detail=f"An error occurred: {e}") from None

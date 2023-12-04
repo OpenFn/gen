@@ -51,7 +51,10 @@ async def generate_signature_v2(data: SignatureInput) -> object:
     prompt = generate_prompt(
         prompt_template, spec=api_info, instruction=data.instruction
     )
-    print(prompt)
+    print("\nPrompt")
+    print(prompt[0]["content"])
+    print("\nprompt 2")
+    print(prompt[1]["content"])
     signature = generator.generate(prompt)[0]
 
     end_tokens = "==="

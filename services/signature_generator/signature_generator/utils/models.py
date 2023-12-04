@@ -1,9 +1,8 @@
 from typing import Union
+from fastapi import HTTPException
 
 import requests
 from pydantic import BaseModel
-
-from signature_generator.utils.constants import SUCCESS_CODE
 
 
 class SignatureGenerator:
@@ -16,10 +15,13 @@ class SignatureGenerator:
             data = {"prompt": prompt}
 
             response = requests.post(self.endpoint_url, headers=headers, json=data)
-            if response.status_code == SUCCESS_CODE:
+            if response.status_code == 200:
                 return response.json().get("generated_code")
             else:
-                return "Error occurred during signature generation"
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Error from {self.endpoint_url} endpoint: {response.text}",
+                )
 
         except requests.exceptions.RequestException as e:
             return f"An error occurred: {e}"

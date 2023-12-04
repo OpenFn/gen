@@ -12,6 +12,7 @@ class CodeT5:
         self.model_name = "Salesforce/codet5-base"
         self.tokenizer = RobertaTokenizer.from_pretrained(self.model_name)
         self.model = T5ForConditionalGeneration.from_pretrained(self.model_name)
+        logger.info(f"Model {self.model_name} loaded.")
 
     def generate_code(
         self,
@@ -34,7 +35,10 @@ class CodeT5:
                 max_length=max_length,
                 num_return_sequences=num_return_sequences,
             )
-            response = [self.tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+            response = [
+                self.tokenizer.decode(output, skip_special_tokens=True)
+                for output in outputs
+            ]
             return response
         except Exception as e:
             # logs error if an exception occurs during code generation
