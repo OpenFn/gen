@@ -14,7 +14,7 @@ login(token=HF_ACCESS_TOKEN)
 
 
 class Llama2_7B:
-    def __init__(self, finetuned_model="models/checkpoint-500", finetune=False):
+    def __init__(self, finetuned_model="models/checkpoint-300", finetune=False):
         self.model_name = f"openfn_llama/{finetuned_model}"
         self.base_model_name = "meta-llama/Llama-2-7b-hf"
         self.finetune_flag = finetune

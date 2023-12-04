@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "openfn-models"
+name = "openfn-llama"
 version = "0.1.0"
 description = ""
-authors = ["optimization team <i.sadou@oxolo.com>"]
+authors = ["Isma-Ilou Sadou <isma@openfn.org>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -15,6 +15,9 @@ peft = "^0.6.2"
 scipy = "^1.11.4"
 trl = "^0.7.4"
 scikit-learn = "^1.3.2"
+uvicorn = "^0.24.0.post1"
+fastapi = "^0.104.1"
+python-dotenv = "^1.0.0"
 
 
 [build-system]

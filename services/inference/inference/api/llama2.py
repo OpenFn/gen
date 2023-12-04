@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-llama2_endpoint = "https://llama2.example.com/generate"
+llama2_endpoint = "https://9a1b-31-12-82-146.ngrok-free.app/generate_code"
 
 
 @router.post("/generate_code")
@@ -23,7 +23,7 @@ def generate_code(input_data: PromptInput) -> CodeOutput:
     try:
         # Assuming input_data is a dictionary with the 'prompt' key
         payload = {"prompt": input_data.prompt}
-
+        print(payload)
         # Send the prompt via POST request to the llama2 endpoint
         response = requests.post(llama2_endpoint, json=payload)
 

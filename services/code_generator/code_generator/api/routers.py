@@ -16,9 +16,16 @@ async def generate_code(data: CodeInput) -> object:
     Generate code implementation for a given OpenAPI spec and instruction.
     """
     generator = CodeGenerator(get_model_endpoint(data.model))
-    prompt_template = "code" if data.model == "gpt3_turbo" else "code_text"
+    if data.model == "gpt3_turbo":
+        prompt_template = "code"
+    elif data.model == "llama2":
+        prompt_template = "llama2"
+    else:
+        prompt_template = "code_text"
+
     print(prompt_template)
     prompt = generate_prompt(prompt_template, signature=data.signature)
+    print(prompt)
     code = generator.generate(prompt)[0]
 
     return {"implementation": code}
