@@ -122,17 +122,17 @@ project = ModelFinetuner(
     "iamtarun/python_code_instructions_18k_alpaca", "meta-llama/Llama-2-7b-hf"
 )
 
-train_ds = load_dataset("json", data_files="data/processed_data/train.json")
+# train_ds = load_dataset("json", data_files="data/processed_data/train.json")
 
-test_ds = load_dataset("json", data_files="data/processed_data/test.json")
-print(train_ds)
-train_ds = train_ds.remove_columns(
-    ["instruction", "signature", "name", "test", "implementation"]
-)
-test_ds = test_ds.remove_columns(
-    ["instruction", "signature", "name", "test", "implementation"]
-)
-print(test_ds)
+# test_ds = load_dataset("json", data_files="data/processed_data/test.json")
+# print(train_ds)
+# train_ds = train_ds.remove_columns(
+#     ["instruction", "signature", "name", "test", "implementation"]
+# )
+# test_ds = test_ds.remove_columns(
+#     ["instruction", "signature", "name", "test", "implementation"]
+# )
+# print(test_ds)
 # print(dataset)
 # tokenized_dataset = dataset["prompt"].map(project.tokenize_prompt)
 # print(tokenized_dataset)
