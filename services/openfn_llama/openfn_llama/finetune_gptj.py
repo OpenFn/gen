@@ -17,7 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-run_name = "llama2-7b-openfn"
+run_name = "gpt-j-6b-openfn"
 
 HF_ACCESS_TOKEN = os.getenv(
     "HF_ACCESS_TOKEN",
@@ -213,7 +213,7 @@ class ModelFinetuner:
         self.trainer.model.save_pretrained(final_checkpoint_dir)
 
 
-project = ModelFinetuner("datasets/adaptors/dataset.jsonl", "meta-llama/Llama-2-7b-hf")
+project = ModelFinetuner("datasets/adaptors/dataset.jsonl", "EleutherAI/gpt-j-6b")
 
 project.train()
 project.save_checkpoint()
