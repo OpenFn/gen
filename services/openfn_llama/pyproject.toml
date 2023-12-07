@@ -19,6 +19,7 @@ uvicorn = "^0.24.0.post1"
 fastapi = "^0.104.1"
 python-dotenv = "^1.0.0"
 openai = "0.28"
+matplotlib = "^3.8.2"
 
 
 [build-system]

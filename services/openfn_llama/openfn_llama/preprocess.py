@@ -10,7 +10,7 @@ from utils.fetch_signatures import generate_type_definitions
 OPENFN_PACKAGES = "/Users/isma/Documents/OpenFN/onboarding/adaptors/packages"
 OUTPUT_PATH = "data/adaptors/adaptor_functions.json"
 DATASET_INSTR = "data/adaptors/adaptor_functions_instr.json"
-DATASET_PROMPT = "data/adaptors/adaptor_functions_prompt_play.json"
+DATASET_PROMPT = "dataset/adaptors/prompt_dataset.jsonl"
 TMP_PATH = "data/adaptors/test_functions.json"
 
 

@@ -6,6 +6,7 @@ import sys
 PACKAGE_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PACKAGE_ROOT))
 
-
 path = Path(__file__).parent.parent / ".env"
-load_dotenv()
+print("Loading .env from", path)
+print("#" * 10)
+load_dotenv(path)
