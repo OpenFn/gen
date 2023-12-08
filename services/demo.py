@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 end_point_signature = "http://localhost:8003/generate_signature_v2/"
 end_point_code = "http://localhost:8004/generate_code/"
 
-samples = ["mailchimp", "cat-facts"]
+samples = ["mailchimp", "cat-facts", "dhis2", "fhir"]
 model_names = ["codeT5", "gpt2", "gpt3_turbo", "gpt_ft", "llama2"]
 
 for i in samples:
