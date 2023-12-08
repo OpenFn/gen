@@ -35,7 +35,7 @@ class Llama2_7B:
     def load_tokenizer(self):
         tokenizer = AutoTokenizer.from_pretrained(
             self.base_model_name,
-            padding_side="right",
+            padding_side="left",
             add_eos_token=True,
             add_bos_token=True,
             trust_remote_code=True,
@@ -49,7 +49,7 @@ class Llama2_7B:
             quantization_config=self.bnb_config,
             device_map="auto",
             trust_remote_code=True,
-            use_auth_token=True,
+            token=True,
         )
         if self.finetune_flag:
             base_model.config.use_cache = False
@@ -59,7 +59,7 @@ class Llama2_7B:
     def generate(
         self,
         prompt: str,
-        max_length: int = 1024,
+        max_length: int = 2048,
         num_return_sequences: int = 1,
         use_base_model=False,
     ) -> str:

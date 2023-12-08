@@ -4,11 +4,13 @@ import os
 import re
 from utils.utils import split_json_dataset
 from utils.prompts import implementation_template
+from utils.fetch_adaptors import generate_function_files_with_all_imports
+from utils.fetch_signatures import generate_type_definitions
 
 OPENFN_PACKAGES = "/Users/isma/Documents/OpenFN/onboarding/adaptors/packages"
 OUTPUT_PATH = "data/adaptors/adaptor_functions.json"
 DATASET_INSTR = "data/adaptors/adaptor_functions_instr.json"
-DATASET_PROMPT = "data/adaptors/adaptor_functions_prompt_play.json"
+DATASET_PROMPT = "dataset/adaptors/prompt_dataset.jsonl"
 TMP_PATH = "data/adaptors/test_functions.json"
 
 
@@ -247,7 +249,17 @@ def build_prompts(dataset):
     return dataset_with_prompts
 
 
-adaptor_functions = extract_adaptor_dataset(OPENFN_PACKAGES, TMP_PATH)
+# adaptor_functions = extract_adaptor_dataset(OPENFN_PACKAGES, TMP_PATH)
+
+# adaptor = "zoho"
+# adaptor_path = f"adaptors/packages/{adaptor}/src/Adaptor.js"
+# adaptor_output_path = f"gen/services/openfn_llama/datasets/rest_adaptors/{adaptor}/adaptors"
+# signature_path = f"adaptors/packages/{adaptor}/types/Adaptor.d.ts"
+# signature_output_path = f"gen/services/openfn_llama/datasets/rest_adaptors/{adaptor}/signatures"
+
+# generate_function_files_with_all_imports(adaptor_path, adaptor_output_path)
+# generate_type_definitions(signature_path, signature_output_path)
+
 
 # data = read_json("data/adaptors/adaptor_functions_prompts.json")
 # print(len(data))
