@@ -18,6 +18,8 @@ async def generate_code(data: CodeInput) -> object:
     generator = CodeGenerator(get_model_endpoint(data.model))
     if data.model == "gpt3_turbo":
         prompt_template = "code"
+    elif data.model == "gpt_ft":
+        prompt_template = "code_ft"
     elif data.model == "llama2":
         prompt_template = "llama2"
     else:

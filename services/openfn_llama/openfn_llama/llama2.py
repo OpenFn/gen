@@ -49,7 +49,7 @@ class Llama2_7B:
             quantization_config=self.bnb_config,
             device_map="auto",
             trust_remote_code=True,
-            use_auth_token=True,
+            token=True,
         )
         if self.finetune_flag:
             base_model.config.use_cache = False

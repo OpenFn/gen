@@ -17,7 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-run_name = "gpt-j-6b-openfn"
+run_name = "gptj-6b-openfn"
 
 HF_ACCESS_TOKEN = os.getenv(
     "HF_ACCESS_TOKEN",
@@ -44,17 +44,17 @@ class ModelFinetuner:
         )
         self.device_map = "auto"
         self.tokenizer = self.load_tokenizer()
-        self.tokenized_dataset = self.dataset.map(
-            self.tokenize_function,
-            batched=True,
-            remove_columns=["input", "completion", "prompt"],
-        )
-        print(self.tokenized_dataset)
+        # self.tokenized_dataset = self.dataset.map(
+        #     self.tokenize_function,
+        #     batched=True,
+        #     remove_columns=["input", "completion", "prompt"],
+        # )
+        # print(self.tokenized_dataset)
         self.base_model = self.load_base_model()
         self.peft_config = self.configure_peft()
-        self.model = prepare_model_for_kbit_training(self.base_model)
-        self.model = get_peft_model(self.model, self.peft_config)
-        self.print_trainable_parameters()
+        # self.model = prepare_model_for_kbit_training(self.base_model)
+        # self.model = get_peft_model(self.model, self.peft_config)
+        # self.print_trainable_parameters()
         self.training_args = self.configure_training_args()
         self.max_seq_length = 2048
         print("Finetuner initialised")
@@ -80,11 +80,9 @@ class ModelFinetuner:
                 "q_proj",
                 "k_proj",
                 "v_proj",
-                "o_proj",
-                "gate_proj",
-                "up_proj",
-                "down_proj",
-                "lm_head",
+                "out_proj",
+                # "fc_in",
+                # "fc_out",
             ],
             bias="none",
             task_type="CAUSAL_LM",
@@ -93,7 +91,7 @@ class ModelFinetuner:
     def load_tokenizer(self):
         tokenizer = AutoTokenizer.from_pretrained(
             self.base_model_name,
-            padding_side="left",
+            padding_side="right",
             add_eos_token=True,
             add_bos_token=True,
             trust_remote_code=True,
@@ -172,9 +170,9 @@ class ModelFinetuner:
             max_steps=500,
             logging_dir="./logs",
             save_strategy="steps",
-            save_steps=10,
+            save_steps=50,
             evaluation_strategy="steps",
-            eval_steps=10,
+            eval_steps=50,
             do_eval=True,
             lr_scheduler_type="constant",
             group_by_length=True,
@@ -183,29 +181,29 @@ class ModelFinetuner:
         )
 
     def train(self):
-        # dataset = self.dataset["train"].train_test_split(test_size=0.1)
-        # trainer = SFTTrainer(
-        #     model=self.base_model,
-        #     train_dataset=dataset["train"],
-        #     eval_dataset=dataset["test"],
-        #     peft_config=self.peft_config,
-        #     dataset_text_field="text",
-        #     max_seq_length=self.max_seq_length,
-        #     tokenizer=self.tokenizer,
-        #     args=self.training_args,
-        # )
-
-        dataset = self.tokenized_dataset.train_test_split(test_size=0.1)
-        trainer = Trainer(
-            model=self.model,
+        dataset = self.dataset["train"].train_test_split(test_size=0.1)
+        self.trainer = SFTTrainer(
+            model=self.base_model,
             train_dataset=dataset["train"],
             eval_dataset=dataset["test"],
+            peft_config=self.peft_config,
+            dataset_text_field="prompt",
+            max_seq_length=self.max_seq_length,
+            tokenizer=self.tokenizer,
             args=self.training_args,
-            data_collator=DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
         )
-        self.model.config.use_cache = False
 
-        trainer.train()
+        # dataset = self.tokenized_dataset.train_test_split(test_size=0.1)
+        # trainer = Trainer(
+        #     model=self.model,
+        #     train_dataset=dataset["train"],
+        #     eval_dataset=dataset["test"],
+        #     args=self.training_args,
+        #     data_collator=DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
+        # )
+        # self.model.config.use_cache = False
+
+        self.trainer.train()
 
     def save_checkpoint(self):
         final_checkpoint_dir = os.path.join(self.output_dir, "final_checkpoint")

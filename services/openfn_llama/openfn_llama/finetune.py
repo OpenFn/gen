@@ -65,7 +65,7 @@ class ModelFinetuner:
             quantization_config=self.bnb_config,
             device_map=self.device_map,
             trust_remote_code=True,
-            use_auth_token=True,
+            token=True,
         )
         base_model.config.use_cache = False
         base_model.config.pretraining_tp = 1
@@ -189,7 +189,7 @@ class ModelFinetuner:
         #     train_dataset=dataset["train"],
         #     eval_dataset=dataset["test"],
         #     peft_config=self.peft_config,
-        #     dataset_text_field="text",
+        #     dataset_text_field="prompt",
         #     max_seq_length=self.max_seq_length,
         #     tokenizer=self.tokenizer,
         #     args=self.training_args,

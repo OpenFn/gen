@@ -9,6 +9,7 @@ end_point_signature = "http://localhost:8003/generate_signature_v2/"
 end_point_code = "http://localhost:8004/generate_code/"
 
 samples = ["mailchimp", "cat-facts"]
+model_names = ["codeT5", "gpt2", "gpt3_turbo", "gpt_ft", "llama2"]
 
 for i in samples:
     base_path = Path(f"../samples/{i}")
@@ -42,7 +43,7 @@ for i in samples:
     f.close()
 
     # Generate code
-    data = {"signature": signature, "model": "gpt3_turbo"}
+    data = {"signature": signature, "model": "gpt_ft"}
     response2 = requests.post(end_point_code, json=data)
     implementation = response2.json()["implementation"]
 
