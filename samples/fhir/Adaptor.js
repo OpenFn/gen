@@ -1,5 +1,5 @@
 import {
-  expandReferences,
+    expandReferences,
 } from '@openfn/language-common';
 import axios from 'axios';
 
@@ -16,36 +16,25 @@ import axios from 'axios';
  * @returns {Function} A function that updates the state with the created patient instance.
  */
 export function createPatient(patient, callback) {
-  return state => {
-    const url = state.configuration.apiUrl + '/Patient';
-    const data = {
-      ...patient,
+    return state => {
+        const url = `${state.configuration.apiUrl}/Patient`;
+        const data = expandReferences(patient)(state);
+
+        return axios
+            .post(url, data)
+            .then(response => {
+                const { id } = response.data;
+                const nextState = {
+                    ...state,
+                    references: [...state.references, id],
+                    data: response.data,
+                };
+                if (callback) return callback(nextState);
+                return nextState;
+            })
+            .catch(error => {
+                console.error(error);
+                throw error;
+            });
     };
-
-    const config = {
-      params: {
-        identifier: 'system',
-      },
-    };
-
-    const resolvedData = expandReferences(data)(state);
-
-    return axios
-      .post(url, resolvedData, config)
-      .then(response => {
-        const createdPatient = response.data;
-        const nextState = {
-          ...state,
-          data: {
-            ...state.data,
-            patient: createdPatient,
-          },
-        };
-        if (callback) return callback(nextState);
-        return nextState;
-      })
-      .catch(error => {
-        return error;
-      });
-  };
 }

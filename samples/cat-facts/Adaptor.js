@@ -26,9 +26,12 @@ export function getCatBreeds(limit, callback) {
         return http
             .get({ url, params })
             .then(response => {
-                const nextState = composeNextState(state, response.data);
+                const nextState = {
+                    ...response,
+                    configuration: state.configuration,
+                };
                 if (callback) return callback(nextState);
-                return nextState;
+                return composeNextState(state, nextState);
             })
             .catch(error => {
                 return error;

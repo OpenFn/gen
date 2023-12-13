@@ -1,55 +1,86 @@
 import json
 import logging
 from pathlib import Path
-
 import requests
 
+# Setup logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-end_point_signature = "http://localhost:8003/generate_signature_v2/"
-end_point_code = "http://localhost:8004/generate_code/"
 
-samples = ["mailchimp", "cat-facts", "dhis2", "fhir"]
-model_names = ["codeT5", "gpt2", "gpt3_turbo", "gpt_ft", "llama2"]
+# API endpoints
+ENDPOINT_SIGNATURE = "http://localhost:8003/generate_signature/"
+ENDPOINT_CODE = "http://localhost:8004/generate_code/"
+ENDPOINT_TEST = "http://localhost:8004/generate_test/"
 
-for i in samples:
-    base_path = Path(f"../samples/{i}")
+# Samples and models for generation
+SAMPLES = ["mailchimp", "cat-facts", "dhis2", "fhir"]
+FT_MODEL_NAME = "gpt_ft"
+MODEL_NAME = "gpt3_turbo"
+# MODELS = ["codeT5", "gpt2", "gpt3_turbo", "gpt_ft", "llama2"]
 
-    # Opening JSON file
-    spec_path = base_path / "spec.json"
 
-    with spec_path.open("r") as file:
-        full_spec = json.load(file)
+def post_request(endpoint, payload):
+    """Send a POST request to a specified endpoint with the given payload."""
+    try:
+        response = requests.post(endpoint, json=payload)
+        response.raise_for_status()  # Raise an HTTPError if the HTTP request returned an unsuccessful status code
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed: {e}")
+        return None
 
-    instruction_path = base_path / "instruction.txt"
 
-    with open(instruction_path) as file2:
-        instruction = file2.read()
+def write_to_file(path, content):
+    """Write content to a file at the specified path."""
+    with path.open("w") as file:
+        file.write(content)
+    logger.info(f"Content written to {path}")
 
-    data_full = {
-        "open_api_spec": full_spec,
-        "instruction": instruction,
-        "model": "gpt3_turbo",
-    }
 
-    # Generate signature
-    response = requests.post(end_point_signature, json=data_full)
-    signature = response.json()["signature"]
+def main():
+    for sample in SAMPLES:
+        logger.info(f"Processing sample: {sample}")
+        base_path = Path(f"../samples/{sample}")
 
-    print(f"\nSignature:\n{signature}")
+        # Load spec and instruction
+        with (base_path / "spec.json").open("r") as spec_file:
+            full_spec = json.load(spec_file)
+        with (base_path / "instruction.txt").open() as instr_file:
+            instruction = instr_file.read()
 
-    dts_path = base_path / "Adaptor.d.ts"
-    f = open(dts_path, "w")
-    f.write(signature)
-    f.close()
+        # Generate signature
+        logger.info(f"Generating signature for {sample}")
+        signature_payload = {"open_api_spec": full_spec, "instruction": instruction, "model": MODEL_NAME}
+        signature_response = post_request(ENDPOINT_SIGNATURE, signature_payload)
 
-    # Generate code
-    data = {"signature": signature, "model": "gpt_ft"}
-    response2 = requests.post(end_point_code, json=data)
-    implementation = response2.json()["implementation"]
+        if signature_response:
+            signature = signature_response.get("signature")
+            write_to_file(base_path / "Adaptor.d.ts", signature)
 
-    print(f"\nImplementation:\n{implementation}")
+            # Generate code
+            logger.info(f"Generating code for {sample}")
+            code_payload = {"signature": signature, "model": FT_MODEL_NAME}
+            code_response = post_request(ENDPOINT_CODE, code_payload)
 
-    adaptor_path = base_path / "Adaptor.js"
-    f = open(adaptor_path, "w")
-    f.write(implementation)
-    f.close()
+            if code_response:
+                implementation = code_response.get("implementation")
+                write_to_file(base_path / "Adaptor.js", implementation)
+
+                # Generate test
+                logger.info(f"Generating test for {sample}")
+                test_payload = {"implementation": implementation, "model": FT_MODEL_NAME}
+                test_response = post_request(ENDPOINT_TEST, test_payload)
+
+                if test_response:
+                    test_code = test_response.get("test")
+                    write_to_file(base_path / "Adaptor.test.js", test_code)
+                else:
+                    logger.error(f"Failed to generate tests for {sample}")
+            else:
+                logger.error(f"Failed to generate code for {sample}")
+        else:
+            logger.error(f"Failed to generate signature for {sample}")
+
+
+if __name__ == "__main__":
+    main()
