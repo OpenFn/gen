@@ -1,32 +1,43 @@
-import { State } from '@openfn/language-common';
+import { getCatBreeds } from './Implementation';
 
 const state = {
-    data: {},
-    references: {},
+    configuration: {
+        apiUrl: 'https://api.example.com',
+    },
 };
 
 describe('getCatBreeds', () => {
-    it('should retrieve a list of cat breeds and include it in the state data', async () => {
-        const { data, references } = await run(
+    it('should retrieve a list of cat breeds', async () => {
+        const httpMock = {
+            get: jest.fn().mockResolvedValue({
+                data: [
+                    { id: 1, name: 'Persian' },
+                    { id: 2, name: 'Siamese' },
+                    { id: 3, name: 'Maine Coon' },
+                ],
+            }),
+        };
+
+        const expectedState = {
+            ...state,
+            data: [
+                { id: 1, name: 'Persian' },
+                { id: 2, name: 'Siamese' },
+                { id: 3, name: 'Maine Coon' },
+            ],
+        };
+
+        await composeNextState(
             state,
-            getCatBreeds(10)
+            expandReferences({ http: httpMock })(getCatBreeds(10))
         );
-        expect(data).toBeDefined();
-        expect(references).toBeDefined();
-        expect(data).toHaveProperty('id');
-        expect(data).toHaveProperty('name');
-        expect(data).toHaveProperty('origin');
-        expect(data).toHaveProperty('description');
-        expect(data).toHaveProperty('temperament');
-        expect(data).toHaveProperty('life_span');
-        expect(data).toHaveProperty('adaptability');
-        expect(data).toHaveProperty('affection_level');
-        expect(data).toHaveProperty('child_friendly');
-        expect(data).toHaveProperty('grooming');
-        expect(data).toHaveProperty('intelligence');
-        expect(data).toHaveProperty('health_issues');
-        expect(data).toHaveProperty('social_needs');
-        expect(data).toHaveProperty('stranger_friendly');
-        expect(references).toHaveProperty('configuration');
+
+        expect(httpMock.get).toHaveBeenCalledWith({
+            url: 'https://api.example.com/breeds',
+            params: {
+                limit: 10,
+            },
+        });
+        expect(result).toEqual(expectedState);
     });
 });

@@ -9,7 +9,7 @@ prompts = {
     "test": (
         "You are a helpful Javascript code assistant.",
         "Below is a Javascript Implementation with JsDoc that performs a task. "
-        "Write a Test that appropriately tests the implementation.\n\n{implementation}\n/* Test */\n",
+        "Write a Test.js that appropriately tests the implementation.\n\n{implementation}\n/* Test */\n",
     ),
     "code_ft": (
         "You are a helpful Javascript code assistant.",
@@ -57,7 +57,7 @@ def generate_prompt(prompt_name: str, **kwargs) -> str:
     prompt = [
         {
             "role": "system",
-            "content": "You are a helpful Javascript code assistant.",
+            "content": system_prompt,
         },
         {"role": "user", "content": user_prompt},
     ]

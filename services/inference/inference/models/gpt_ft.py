@@ -12,7 +12,7 @@ OPENAI_API_KEY = os.getenv(
 
 class GPT3Turbo:
     def __init__(self, open_api_key: str = OPENAI_API_KEY):
-        self.model_name = "ft:gpt-3.5-turbo-0613:personal::8TIlrSFP"
+        self.model_name = "ft:gpt-3.5-turbo-1106:openfn::8XNmyYHo"
         self.api_key = open_api_key
         self.client = OpenAI(api_key=open_api_key)
         logger.info(f"OpenAI {self.model_name} client loaded.")
@@ -26,7 +26,6 @@ class GPT3Turbo:
         """
         try:
             logger.info("Generating")
-            print("Generating")
             response = self.client.chat.completions.create(
                 messages=messages,
                 model="ft:gpt-3.5-turbo-0613:personal::8TIlrSFP",

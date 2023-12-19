@@ -40,9 +40,13 @@ async def generate_test(data: TestInput) -> dict:
     generator = CodeGenerator(get_model_endpoint(data.model))
     prompt = generate_prompt("test", implementation=data.implementation)
     test = generator.generate(prompt)[0]
+    logger.info(f"Test: \n {test}")
     end_tokens = "/* Test */"
     if end_tokens in test:
         logger.info("Trimming the end token from test")
+        logger.info(f"end token : {test.find(end_tokens)}")
+        logger.info(f"\nA : {test[test.find(end_tokens) :]}")
+        logger.info(f"\nB : {test[:test.find(end_tokens)]}")
         test = test[test.find(end_tokens) :]
     else:
         logger.warning("End token not found in the test")

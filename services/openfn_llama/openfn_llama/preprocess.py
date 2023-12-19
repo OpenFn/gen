@@ -249,6 +249,70 @@ def build_prompts(dataset):
     return dataset_with_prompts
 
 
+def build_jsonl(directory_path, output_file):
+    jsonl_entries = []
+
+    for file_name in os.listdir(directory_path):
+        if (
+            file_name.endswith(".js")
+            and "agent" not in file_name
+            and "test" not in file_name
+        ):
+            js_file_path = os.path.join(directory_path, file_name)
+            test_file_path = os.path.join(
+                directory_path, f"{file_name.split('.')[0]}.test.js"
+            )
+            agent_file_path = os.path.join(
+                directory_path, f"{file_name.split('.')[0]}.agent.js"
+            )
+
+            js_content = read_file(js_file_path)
+            test_content = (
+                read_file(test_file_path) if os.path.exists(test_file_path) else ""
+            )
+            agent_content = (
+                read_file(agent_file_path) if os.path.exists(agent_file_path) else ""
+            )
+
+            print(js_file_path)
+            print(test_file_path)
+            print(agent_file_path)
+            if not test_content.strip():
+                print("no test")
+                continue
+            print("test found")
+
+            test_content_escaped = json.dumps(test_content)[1:-1]
+
+            implementation_prompt = f"Below is a Javascript Implementation with JsDoc that performs a task. Write an appropriate and extensive test.\n\n/* Implementation */\n{js_content}\n\n"
+            test_prompt = (
+                f"/* Test */\n{test_content_escaped}\n\n/* Mock Agent */{agent_content}\n\n"
+                if test_content.strip()
+                else "/* Test */\n{test_content_escaped}\n\n"
+            )
+
+            messages = [
+                {
+                    "role": "system",
+                    "content": "You are a helpful Javascript code assistant.",
+                },
+                {"role": "user", "content": implementation_prompt},
+                {"role": "assistant", "content": test_prompt},
+            ]
+
+            jsonl_entries.append({"messages": messages})
+
+    with open(output_file, "w") as jsonl_file:
+        for entry in jsonl_entries:
+            jsonl_file.write(json.dumps(entry) + "\n")
+
+
+# Example usage:
+directory_path = "datasets/rest_tests/"
+output_file = "datasets/processed_data/tests.jsonl"
+build_jsonl(directory_path, output_file)
+
+
 # adaptor_functions = extract_adaptor_dataset(OPENFN_PACKAGES, TMP_PATH)
 
 # adaptor = "zoho"

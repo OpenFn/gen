@@ -21,16 +21,14 @@ def generate_code(input_data: MessageInput) -> CodeOutput:
     """
 
     try:
-        print("messages", type(input_data))
         messages = input_data.prompt
-        print("messages", messages)
-        print("messages", type(messages))
         generated_code = gpt3.generate(messages)
         if generated_code is None:
             raise HTTPException(
                 status_code=500,
                 detail="An error occurred during code generation",
             )
+        logger.info(f"Generated code: \n{generated_code}")
         return {"generated_code": [generated_code]}
     except Exception as e:
         logger.error(f"An error occurred during code generation: {e}")

@@ -44,9 +44,9 @@ describe('createPatient', () => {
         expect(expandReferences).toHaveBeenCalledWith(patient);
     });
 
-    it('should invoke the callback function with the resulting state', async () => {
+    it('should invoke the callback function if provided', async () => {
         const patient = { name: 'John Doe', age: 30, gender: 'male' };
-        const expandedPatient = { name: 'John Doe', age: 30, gender: 'male' };
+        const callback = jest.fn();
         const response = {
             data: {
                 id: 'abc123',
@@ -60,20 +60,13 @@ describe('createPatient', () => {
             references: ['abc123'],
             data: response.data,
         };
-        const callback = jest.fn();
 
         axios.post.mockResolvedValue(response);
-        expandReferences.mockReturnValueOnce(expandedPatient);
 
         await expect(
             createPatient(patient, callback)(state)
         ).resolves.toEqual(nextState);
 
-        expect(axios.post).toHaveBeenCalledWith(
-            'https://example.com/api/Patient',
-            expandedPatient
-        );
-        expect(expandReferences).toHaveBeenCalledWith(patient);
         expect(callback).toHaveBeenCalledWith(nextState);
     });
 
@@ -82,14 +75,9 @@ describe('createPatient', () => {
         const error = new Error('Request failed');
 
         axios.post.mockRejectedValue(error);
-        expandReferences.mockReturnValueOnce(patient);
 
         await expect(createPatient(patient)(state)).rejects.toThrow(error);
 
-        expect(axios.post).toHaveBeenCalledWith(
-            'https://example.com/api/Patient',
-            patient
-        );
-        expect(expandReferences).toHaveBeenCalledWith(patient);
+        expect(console.error).toHaveBeenCalledWith(error);
     });
 });

@@ -1,25 +1,25 @@
-/* Test */
-
 import { addTagToListMember } from './addTagToListMember';
 
 const state = {
   configuration: {
-    apiUrl: 'https://<dc>.api.mailchimp.com/3.0',
-    apiKey: '<apiKey>',
+    apiUrl: 'https://api.mailchimp.com/3.0',
+    apiKey: '1234567890abcdef',
   },
   data: {},
 };
 
-describe('addTagToListMember', () => {
+describe('addTagToListMember()', () => {
   it('should add a tag to a member in a list', async () => {
     const list_id = 'list123';
     const subscriber_hash = 'subscriber456';
     const tag = 'tag789';
 
-    const expectedState = {
+    const nextState = await addTagToListMember(list_id, subscriber_hash, tag)(state);
+
+    expect(nextState).toEqual({
       ...state,
       data: {
-        id: list_id,
+        id: 'list123',
         name: 'List Name',
         contact: {
           company: 'Company Name',
@@ -47,29 +47,25 @@ describe('addTagToListMember', () => {
         marketing_permissions: false,
         modules: false,
         stats: false,
-        date_created: '2021-01-01T00:00:00+00:00',
-        list_rating: 0,
-        email_count_since_start: 0,
-        merge_field_count: 0,
-        avg_sub_rate: 0,
-        avg_unsub_rate: 0,
-        target_sub_rate: 0,
-        open_rate: 0,
-        click_rate: 0,
-        last_sub_date: '',
-        last_unsub_date: '',
+        _links: [],
         tags: [
           {
             id: 'tag123',
             name: 'Tag Name',
-            date_added: '2021-01-01T00:00:00+00:00',
+            date_added: '2020-01-01T00:00:00+00:00',
+          },
+          {
+            id: 'tag456',
+            name: 'Tag Name',
+            date_added: '2020-01-01T00:00:00+00:00',
+          },
+          {
+            id: 'tag789',
+            name: 'Tag Name',
+            date_added: '2020-01-01T00:00:00+00:00',
           },
         ],
       },
-    };
-
-    await expect(addTagToListMember(list_id, subscriber_hash, tag)(state)).resolves.toEqual(
-      expectedState
-    );
+    });
   });
 });
