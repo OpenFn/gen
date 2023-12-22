@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from inference.models.gpt3_turbo import GPT3Turbo
 from inference.schemas.models import CodeOutput, MessageInput
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
@@ -24,6 +25,7 @@ def generate_code(input_data: MessageInput) -> CodeOutput:
         messages = input_data.prompt
         generated_code = gpt3.generate(messages)
         if generated_code is None:
+            logger.error("An error occurred during code generation")
             raise HTTPException(
                 status_code=500,
                 detail="An error occurred during code generation",

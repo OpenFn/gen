@@ -28,7 +28,7 @@ class CodeGenerator:
                 status_code=e.response.status_code, detail=error_message
             ) from e
         except Exception as e:
-            error_message = f"An unexpected error occurred: {e}"
+            error_message = f"An unexpected error occurred in code gen: {e}"
             self.logger.error(error_message)
             raise HTTPException(status_code=500, detail=error_message)
 

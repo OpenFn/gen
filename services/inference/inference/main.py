@@ -21,17 +21,17 @@ async def root() -> dict:
     """
     Root GET
     """
-    return {"Code Generation Service": "running"}
+    return {"Inference Service": "running"}
 
 
-app.include_router(codet5.router, prefix="/codet5", tags=["CodeT5 generation"])
-app.include_router(gpt2.router, prefix="/gpt2", tags=["GPT2 generation"])
-app.include_router(gpt3.router, prefix="/gpt3", tags=["GPT3 generation"])
+# app.include_router(codet5.router, prefix="/codet5", tags=["CodeT5 generation"])
+# app.include_router(gpt2.router, prefix="/gpt2", tags=["GPT2 generation"])
+# app.include_router(gpt3.router, prefix="/gpt3", tags=["GPT3 generation"])
 app.include_router(
     gpt3_turbo.router, prefix="/gpt3_turbo", tags=["GPT3.5 Turbo generation"]
 )
 app.include_router(gpt_ft.router, prefix="/gpt_ft", tags=["GPT-FT generation"])
-app.include_router(llama2.router, prefix="/llama2", tags=["LLaMA-2 generation"])
+# app.include_router(llama2.router, prefix="/llama2", tags=["LLaMA-2 generation"])
 
 if __name__ == "__main__":
     # Use this for debugging purposes only

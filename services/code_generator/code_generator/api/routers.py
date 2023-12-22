@@ -1,54 +1,34 @@
 import logging
 from fastapi import APIRouter
-from code_generator.utils.models import CodeGenerator, CodeInput, TestInput
-from code_generator.utils.prompts import generate_prompt
-from code_generator.utils.utils import get_model_endpoint
+from code_generator.utils.models import CodeInput, TestInput
+from code_generator.utils.utils import (
+    create_code_generator,
+    generate_code_prompt,
+    generate_test_prompt,
+    trim_test,
+)
+
+router = APIRouter()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
 
-
-@router.post("/generate_code")
+@router.post("/generate_code", response_model=dict)
 async def generate_code(data: CodeInput) -> dict:
-    """
-    Generate code implementation for a given OpenAPI spec and instruction.
-    """
-    logger.info("Generating code...")
-    generator = CodeGenerator(get_model_endpoint(data.model))
-    prompt_template = (
-        "code"
-        if data.model == "gpt3_turbo"
-        else "code_ft"
-        if data.model == "gpt_ft"
-        else "code_text"
-    )
-    prompt = generate_prompt(prompt_template, signature=data.signature)
+    generator = create_code_generator(data.model)
+    prompt = generate_code_prompt(data.model, data.signature)
+    logger.info("Code generation..")
     code = generator.generate(prompt)[0]
-    logger.info("Code generation complete.")
     return {"implementation": code}
 
 
-@router.post("/generate_test")
+@router.post("/generate_test", response_model=dict)
 async def generate_test(data: TestInput) -> dict:
-    """
-    Generate test for a given adapter.js implementation.
-    """
-    logger.info("Generating test...")
-    generator = CodeGenerator(get_model_endpoint(data.model))
-    prompt = generate_prompt("test", implementation=data.implementation)
+    generator = create_code_generator(data.model)
+    prompt = generate_test_prompt(data.model, data.implementation)
+    logger.info("Test generation..")
     test = generator.generate(prompt)[0]
-    logger.info(f"Test: \n {test}")
-    end_tokens = "/* Test */"
-    if end_tokens in test:
-        logger.info("Trimming the end token from test")
-        logger.info(f"end token : {test.find(end_tokens)}")
-        logger.info(f"\nA : {test[test.find(end_tokens) :]}")
-        logger.info(f"\nB : {test[:test.find(end_tokens)]}")
-        test = test[test.find(end_tokens) :]
-    else:
-        logger.warning("End token not found in the test")
     logger.info("Test generation complete.")
-    return {"test": test}
+    return {"test": trim_test(test)}

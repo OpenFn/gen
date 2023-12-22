@@ -8,9 +8,17 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # API endpoints
-ENDPOINT_SIGNATURE = "http://localhost:8003/generate_signature/"
-ENDPOINT_CODE = "http://localhost:8004/generate_code/"
-ENDPOINT_TEST = "http://localhost:8004/generate_test/"
+# ENDPOINT_SIGNATURE = "http://localhost:8003/generate_signature/"
+# ENDPOINT_CODE = "http://localhost:8004/generate_code/"
+# ENDPOINT_TEST = "http://localhost:8004/generate_test/"
+
+ENDPOINT_SIGNATURE = "http://0.0.0.0:8001/generate_signature/"
+ENDPOINT_CODE = "http://0.0.0.0:8002/generate_code/"
+ENDPOINT_TEST = "http://0.0.0.0:8002/generate_test/"
+
+# ENDPOINT_SIGNATURE = "http://localhost:8001/signature/generate_signature/"
+# ENDPOINT_CODE = "http://localhost:8001/code/generate_code/"
+# ENDPOINT_TEST = "http://localhost:8001/code/generate_test/"
 
 # Samples and models for generation
 SAMPLES = ["mailchimp", "cat-facts", "dhis2", "fhir"]
@@ -50,7 +58,11 @@ def main():
 
         # Generate signature
         logger.info(f"Generating signature for {sample}")
-        signature_payload = {"open_api_spec": full_spec, "instruction": instruction, "model": MODEL_NAME}
+        signature_payload = {
+            "open_api_spec": full_spec,
+            "instruction": instruction,
+            "model": MODEL_NAME,
+        }
         signature_response = post_request(ENDPOINT_SIGNATURE, signature_payload)
 
         if signature_response:
@@ -68,7 +80,10 @@ def main():
 
                 # Generate test
                 logger.info(f"Generating test for {sample}")
-                test_payload = {"implementation": implementation, "model": FT_MODEL_NAME}
+                test_payload = {
+                    "implementation": implementation,
+                    "model": FT_MODEL_NAME,
+                }
                 test_response = post_request(ENDPOINT_TEST, test_payload)
 
                 if test_response:

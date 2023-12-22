@@ -53,6 +53,8 @@ prompt = f"Below is a TypeScript Declaration with JsDoc that describes a tasks. 
 
 print(f"Prompt:\n{prompt}\n")
 
+
+### Via API
 # llama2 = Llama2_7B()
 
 # response = llama2.generate(prompt, use_base_model=True)
@@ -62,6 +64,7 @@ print(f"Prompt:\n{prompt}\n")
 # print(f"Finetuned Llama2 response:\n{response}\n")
 
 
+### Via Model
 import torch
 from peft import PeftModel
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig

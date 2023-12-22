@@ -1,43 +1,61 @@
-import { getCatBreeds } from './Implementation';
+import { testConfig } from '@openfn/language-common';
+import nock from 'nock';
+import { getCatBreeds } from './getCatBreeds';
+
+nock.disableNetConnect();
+
+const configuration = {
+  apiUrl: 'https://api.thecatapi.com/v1',
+  access_token: 'abc123',
+};
 
 const state = {
-    configuration: {
-        apiUrl: 'https://api.example.com',
-    },
+  configuration,
 };
 
 describe('getCatBreeds', () => {
-    it('should retrieve a list of cat breeds', async () => {
-        const httpMock = {
-            get: jest.fn().mockResolvedValue({
-                data: [
-                    { id: 1, name: 'Persian' },
-                    { id: 2, name: 'Siamese' },
-                    { id: 3, name: 'Maine Coon' },
-                ],
-            }),
-        };
+  it('should retrieve a list of cat breeds and include it in the state data', async () => {
+    const scope = nock(configuration.apiUrl)
+      .get('/breeds')
+      .query({ access_token: configuration.access_token, limit: 10 })
+      .reply(200, [{ name: 'Abyssinian' }, { name: 'Aegean' }]);
 
-        const expectedState = {
-            ...state,
-            data: [
-                { id: 1, name: 'Persian' },
-                { id: 2, name: 'Siamese' },
-                { id: 3, name: 'Maine Coon' },
-            ],
-        };
+    const nextState = await getCatBreeds(10)(state);
 
-        await composeNextState(
-            state,
-            expandReferences({ http: httpMock })(getCatBreeds(10))
-        );
-
-        expect(httpMock.get).toHaveBeenCalledWith({
-            url: 'https://api.example.com/breeds',
-            params: {
-                limit: 10,
-            },
-        });
-        expect(result).toEqual(expectedState);
+    expect(nextState).toEqual({
+      ...state,
+      data: [{ name: 'Abyssinian' }, { name: 'Aegean' }],
     });
+
+    scope.done();
+  });
+
+  it('should call the callback if provided', async () => {
+    const callback = jest.fn();
+
+    const scope = nock(configuration.apiUrl)
+      .get('/breeds')
+      .query({ access_token: configuration.access_token, limit: 10 })
+      .reply(200, [{ name: 'Abyssinian' }, { name: 'Aegean' }]);
+
+    await getCatBreeds(10, callback)(state);
+
+    expect(callback).toHaveBeenCalledWith({
+      ...state,
+      data: [{ name: 'Abyssinian' }, { name: 'Aegean' }],
+    });
+
+    scope.done();
+  });
+
+  it('should handle non-200 responses', async () => {
+    const scope = nock(configuration.apiUrl)
+      .get('/breeds')
+      .query({ access_token: configuration.access_token, limit: 10 })
+      .reply(404);
+
+    await expect(getCatBreeds(10)(state)).rejects.toThrow();
+
+    scope.done();
+  });
 });

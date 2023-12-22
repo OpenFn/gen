@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from inference.models.gpt_ft import GPT3Turbo
 from inference.schemas.models import CodeOutput, MessageInput
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
@@ -28,7 +29,6 @@ def generate_code(input_data: MessageInput) -> CodeOutput:
                 status_code=500,
                 detail="An error occurred during code generation",
             )
-        logger.info(f"Generated code: \n{generated_code}")
         return {"generated_code": [generated_code]}
     except Exception as e:
         logger.error(f"An error occurred during code generation: {e}")

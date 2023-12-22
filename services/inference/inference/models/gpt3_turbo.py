@@ -3,6 +3,7 @@ import os
 
 from openai import OpenAI
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 OPENAI_API_KEY = os.getenv(
@@ -26,7 +27,6 @@ class GPT3Turbo:
         """
         try:
             logger.info("Generating")
-            print("Generating")
             response = self.client.chat.completions.create(
                 messages=messages,
                 model="gpt-3.5-turbo",
@@ -35,6 +35,6 @@ class GPT3Turbo:
             )
             return response.choices[0].message.content.strip()
         except Exception as e:
-            print(e)
-            logger.error(f"An error occurred during GPT-3.5 Turbo completion: {e}")
-            return None
+            error_message = f"An error occurred during GPT-3.5 Turbo completion: {e}"
+            logger.error(error_message)
+            raise Exception(status_code=500, detail=error_message)

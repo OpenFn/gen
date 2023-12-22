@@ -1,8 +1,4 @@
-import {
-    composeNextState,
-    expandReferences,
-    http,
-} from '@openfn/language-common';
+import { composeNextState } from '@openfn/language-common';
 
 /**
  * Retrieves a list of cat breeds and includes it in the state data.
@@ -17,24 +13,21 @@ import {
  * @returns {Function} A function that updates the state with the retrieved cat breeds.
  */
 export function getCatBreeds(limit, callback) {
-    return state => {
-        const url = state.configuration.apiUrl + '/breeds';
-        const params = {
-            limit,
-        };
+  return state => {
+    const { apiUrl, access_token } = state.configuration;
 
-        return http
-            .get({ url, params })
-            .then(response => {
-                const nextState = {
-                    ...response,
-                    configuration: state.configuration,
-                };
-                if (callback) return callback(nextState);
-                return composeNextState(state, nextState);
-            })
-            .catch(error => {
-                return error;
-            });
-    };
+    const url = `${apiUrl}/breeds?access_token=${access_token}&limit=${limit}`;
+    return fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw response;
+        }
+        return response.json();
+      })
+      .then(body => {
+        const nextState = composeNextState(state, body);
+        if (callback) return callback(nextState);
+        return nextState;
+      });
+  };
 }

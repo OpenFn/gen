@@ -8,5 +8,4 @@ sys.path.insert(0, str(PACKAGE_ROOT))
 
 path = Path(__file__).parent.parent / ".env"
 print("Loading .env from", path)
-print("#" * 10)
 load_dotenv(path)

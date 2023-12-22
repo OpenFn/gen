@@ -1,7 +1,7 @@
 import requests
 
 # Define the URL of the FastAPI endpoint
-endpoint_url = "http://localhost:8002/gpt3_turbo/generate_code/"
+endpoint_url = "http://localhost:8003/gpt3_turbo/generate_code/"
 
 input_data = {"text": "def greet(user): print(f'hello <extra_id_0>!')"}
 input_data2 = {"text": "Generate Javascript: get weather for a city"}

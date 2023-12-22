@@ -22,7 +22,6 @@ run_name = "llama2-7b-openfn"
 HF_ACCESS_TOKEN = os.getenv(
     "HF_ACCESS_TOKEN",
 )
-print(HF_ACCESS_TOKEN)
 login(token=HF_ACCESS_TOKEN)
 
 
@@ -49,7 +48,6 @@ class ModelFinetuner:
             batched=True,
             remove_columns=["input", "completion", "prompt"],
         )
-        print(self.tokenized_dataset)
         self.base_model = self.load_base_model()
         self.peft_config = self.configure_peft()
         self.model = prepare_model_for_kbit_training(self.base_model)
@@ -119,7 +117,6 @@ class ModelFinetuner:
 
     def plot_data_lengths(self, dataset):
         tokenized_dataset = dataset.map(self.tokenize_function, batched=True)
-        print(tokenized_dataset)
         lengths = [
             len(input_ids) for input_ids in tokenized_dataset["train"]["input_ids"]
         ]

@@ -1,0 +1,15 @@
+# Ignore .env files
+*.env
+
+# Ignore log files
+*.log
+
+# Ignore datasets
+*.csv
+*.json
+*.jsonl
+
+# .gitignore
+.git
+__pycache__
+.cache

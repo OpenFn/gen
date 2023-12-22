@@ -1,83 +1,51 @@
-import { createPatient } from './createPatient';
-import { expandReferences } from '@openfn/language-common';
-import axios from 'axios';
-
-jest.mock('axios');
-
-const state = {
-    configuration: {
-        apiUrl: 'https://example.com/api',
-    },
-    references: [],
-    data: null,
-};
-
+/* Test */
 describe('createPatient', () => {
-    it('should create a new patient instance and add it to the state data', async () => {
-        const patient = { name: 'John Doe', age: 30, gender: 'male' };
-        const expandedPatient = { name: 'John Doe', age: 30, gender: 'male' };
-        const response = {
-            data: {
-                id: 'abc123',
-                name: 'John Doe',
-                age: 30,
-                gender: 'male',
-            },
-        };
-        const nextState = {
-            ...state,
-            references: ['abc123'],
-            data: response.data,
-        };
+  it('creates a new patient instance and adds it to the state data', async () => {
+    const initialState = {
+      configuration: {
+        apiUrl: 'https://example.com/fhir',
+      },
+      data: null,
+    };
 
-        axios.post.mockResolvedValue(response);
-        expandReferences.mockReturnValueOnce(expandedPatient);
+    const patient = {
+      name: 'John Doe',
+      age: 30,
+      gender: 'male',
+    };
 
-        await expect(createPatient(patient)(state)).resolves.toEqual(
-            nextState
-        );
+    const mockResponse = {
+      resourceType: 'Patient',
+      id: '123',
+      name: [{ given: ['John'], family: 'Doe' }],
+      gender: 'male',
+      birthDate: '1992-01-01',
+    };
 
-        expect(axios.post).toHaveBeenCalledWith(
-            'https://example.com/api/Patient',
-            expandedPatient
-        );
-        expect(expandReferences).toHaveBeenCalledWith(patient);
+    axios.post.mockResolvedValue({ data: mockResponse });
+
+    const state = await createPatient(patient)(initialState);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://example.com/fhir/Patient',
+      {
+        name: 'John Doe',
+        age: 30,
+        gender: 'male',
+      }
+    );
+
+    expect(state).toEqual({
+      configuration: {
+        apiUrl: 'https://example.com/fhir',
+      },
+      data: {
+        resourceType: 'Patient',
+        id: '123',
+        name: [{ given: ['John'], family: 'Doe' }],
+        gender: 'male',
+        birthDate: '1992-01-01',
+      },
     });
-
-    it('should invoke the callback function if provided', async () => {
-        const patient = { name: 'John Doe', age: 30, gender: 'male' };
-        const callback = jest.fn();
-        const response = {
-            data: {
-                id: 'abc123',
-                name: 'John Doe',
-                age: 30,
-                gender: 'male',
-            },
-        };
-        const nextState = {
-            ...state,
-            references: ['abc123'],
-            data: response.data,
-        };
-
-        axios.post.mockResolvedValue(response);
-
-        await expect(
-            createPatient(patient, callback)(state)
-        ).resolves.toEqual(nextState);
-
-        expect(callback).toHaveBeenCalledWith(nextState);
-    });
-
-    it('should throw an error if the request fails', async () => {
-        const patient = { name: 'John Doe', age: 30, gender: 'male' };
-        const error = new Error('Request failed');
-
-        axios.post.mockRejectedValue(error);
-
-        await expect(createPatient(patient)(state)).rejects.toThrow(error);
-
-        expect(console.error).toHaveBeenCalledWith(error);
-    });
+  });
 });

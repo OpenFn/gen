@@ -22,7 +22,6 @@ run_name = "gptj-6b-openfn"
 HF_ACCESS_TOKEN = os.getenv(
     "HF_ACCESS_TOKEN",
 )
-print(HF_ACCESS_TOKEN)
 login(token=HF_ACCESS_TOKEN)
 
 
@@ -117,7 +116,6 @@ class ModelFinetuner:
 
     def plot_data_lengths(self, dataset):
         tokenized_dataset = dataset.map(self.tokenize_function, batched=True)
-        print(tokenized_dataset)
         lengths = [
             len(input_ids) for input_ids in tokenized_dataset["train"]["input_ids"]
         ]

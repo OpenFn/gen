@@ -64,6 +64,7 @@ cover/
 # Cache files
 .cache/
 tmp/
+.DS_Store
 
 services/inference/data/
 

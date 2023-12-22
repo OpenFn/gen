@@ -8,6 +8,39 @@ The project architecture is designed as a two-tier system. The first tier (curre
 
 ![Architecture Diagram](./assets/system-architecture.png)
 
+## Running with Docker Compose
+
+To run the application using Docker Compose, follow these steps:
+
+1. Navigate to the root directory of the project:
+
+   ```bash
+   cd /path/to/your/gen/repo
+   ```
+
+2. Build and start the services using Docker Compose:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+   The `--build` option ensures that Docker Compose builds the images before starting the services if non existent
+
+3. The services should now be running, and you can access them using the specified ports:
+
+   - Signature Generator: [http://localhost:8001](http://localhost:8001)
+   - Code Generator: [http://localhost:8002](http://localhost:8002)
+   - Inference: [http://localhost:8003](http://localhost:8003)
+
+4. To stop the services, press `Ctrl+C` in the terminal where Docker Compose is running.
+
+**Note:** No docker image is stored at the time of writing and have to be built locally as shown above.
+
+**Note:** Ensure that you have Docker and Docker Compose installed on your machine.
+
+For more detailed instructions or troubleshooting, refer to the Docker documentation: [Get Docker](https://docs.docker.com/get-docker/) and [Install Docker Compose](https://docs.docker.com/compose/install/).
+
+
 ## Installation
 
 To set up the project and ensure proper functionality, follow these steps:
@@ -69,27 +102,30 @@ Additionally, each module includes a `demo.py` file that can be executed. To run
    ```bash
    poetry run python demo.py
    ```
+## Demo
 
-To execute the entire process and handle requests from the specified OpenAPI spec and instructions, employing AI models for both signature and code generation, and delivering the generated code as a response, run the following command:
+To execute the entire generation process for the provided samples, run the following command:
 
 ```bash
 cd services/
-poetry run python demo.py
+python3 demo.py
 ```
+
+This prepares the data, performs requests and saves the outputs (Adaptor.d.ts, Adapter.js, and Adapter.test.js).
 
 ## Project Structure
 
 The project structure is organized as follows:
 
-- `app/`: Contains the main logic and application entry point.
+- `services/`: Contains the dem
 - `utils/`: Directory containing utility functions and helper modules for processing instructions and generating code.
 - `tests/`: Directory containing test files for the application.
 
-## API Documentation
+<!-- ## API Documentation
 
 The application's API is documented using OpenAPI. View the API documentation at the following URL:
 
-[API Documentation](https://yourapidocumentationurl.com)
+[API Documentation](https://yourapidocumentationurl.com) -->
 
 ## Contributing
 
@@ -98,7 +134,3 @@ Contributions to this project are welcome. Feel free to open issues or submit pu
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-TBD: the placeholders are to be replaces with actual links, instructions, and details relevant to the project.
