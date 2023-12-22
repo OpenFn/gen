@@ -117,15 +117,19 @@ This prepares the data, performs requests and saves the outputs (Adaptor.d.ts, A
 
 The project structure is organized as follows:
 
-- `services/`: Contains the dem
+- `services/`: Contains the three services and demo file.
 - `utils/`: Directory containing utility functions and helper modules for processing instructions and generating code.
 - `tests/`: Directory containing test files for the application.
 
-<!-- ## API Documentation
+## API Documentation
 
-The application's API is documented using OpenAPI. View the API documentation at the following URL:
+The service APIs are documented using OpenAPI (FastAPI). You can view the API documentation for each running service by navigating to the `/docs` endpoint. Here are the URLs for each service:
 
-[API Documentation](https://yourapidocumentationurl.com) -->
+- **Signature Generator Service:** [http://localhost:8001/docs](http://localhost:8001/docs)
+- **Code Generator Service:** [http://localhost:8002/docs](http://localhost:8002/docs)
+- **Inference Service:** [http://localhost:8003/docs](http://localhost:8003/docs)
+
+Simply access the respective URL to explore and interact with the API documentation. Replace the endpoints with the actual service endpoints.
 
 ## Contributing
 
