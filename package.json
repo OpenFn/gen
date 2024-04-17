@@ -15,6 +15,11 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "elysia": "^1.0.13"
-  }
+    "elysia": "^1.0.13",
+    "node-calls-python": "^1.8.4",
+    "node-gyp": "^10.1.0"
+  },
+  "trustedDependencies": [
+    "node-calls-python"
+  ]
 }
