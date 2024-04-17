@@ -10,16 +10,13 @@ const py = nodecallspython.interpreter;
 // Ok so the TODO here is to import modules on command
 // (and maybe preload some core stuff)
 export const run = async (scriptName: string, args: JSON) => {
-  console.log("importing...");
-
   try {
     const pymodule = await py.import(
       path.resolve(`./services/${scriptName}/${scriptName}.py`),
       true
     );
-    console.log("ok!");
+
     const result = await py.call(pymodule, scriptName, args);
-    console.log(result);
 
     return result;
   } catch (e) {

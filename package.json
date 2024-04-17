@@ -6,7 +6,7 @@
     "start": "NODE_ENV=production bun platform/src/index.ts",
     "dev": "bun --watch platform/src/index.ts",
     "build": "bun build platform/src/index.ts",
-    "test": "bun test"
+    "test": "bun test platform/test "
   },
   "devDependencies": {
     "@types/bun": "latest"
