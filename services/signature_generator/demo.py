@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 
 logger = logging.getLogger(__name__)
-end_point = "http://localhost:8003/generate_signature/"
+end_point = "http://localhost:8001/generate_signature/"
 
 
 # Opening JSON file
@@ -27,12 +27,12 @@ instruction = """Create an OpenFn function that accesses the /breeds endpoint"""
 data = {
     "open_api_spec": spec,
     "instruction": instruction,
-    "model": "gpt3",
+    "model": "gpt3_turbo",
 }
 data_full = {
     "open_api_spec": full_spec,
     "instruction": instruction,
-    "model": "gpt3",
+    "model": "gpt3_turbo",
 }
 data_default = {"open_api_spec": spec, "instruction": instruction}
 
@@ -42,6 +42,7 @@ data_default = {"open_api_spec": spec, "instruction": instruction}
 
 #### v2
 
-end_point = "http://localhost:8003/generate_signature_v2/"
+end_point = "http://localhost:8001/generate_signature/"
 response = requests.post(end_point, json=data_full)
+print(response.json())
 # results in response json() ["signature"]
