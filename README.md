@@ -20,6 +20,13 @@ to add node-calls-ppython as a trustedDependency.
 
 Hopefully this will Just Work forever now, but I'm making a note here in case
 
+Note that you currently HAVE to run `bun install` to build the node-calls-python
+module. Using bun's native, no-install installation doesn't seem to work. I
+would like to find a solution to this
+
+(also, zero bun install means no intellisense from node_modules types, so maybe
+bun install is fine)
+
 ## Getting Started
 
 Install stuff:
