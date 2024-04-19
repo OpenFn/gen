@@ -1,6 +1,5 @@
-import { app } from "../src/server";
-
 import { describe, expect, it } from "bun:test";
+import { app } from "../src/server";
 
 const port = 9865;
 
@@ -48,8 +47,8 @@ describe("Python Services", () => {
       expect(response.status).toBe(200);
     });
 
-    // Ok for some reason I acn't post a string
-    // This doesn't REALLY matter so I'm not gnna spend time on it
+    // Ok for some reason I can't post a string
+    // This doesn't REALLY matter so I'm not gonna spend time on it
     it.skip("echoes back a string", async () => {
       const str = "hello world";
       const response = await app.handle(post("services/echo", str));

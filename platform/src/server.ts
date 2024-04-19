@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 
-import { run } from "./bridge";
+import setupServices from "./middleware/services";
 
 export const app = new Elysia();
 
@@ -14,19 +14,7 @@ app.get("/", (ctx) => {
   return "openfn apollo";
 });
 
-app.group("/services", (app) => {
-  // TODO: autogenerate these routes
-  app.post("echo", async (ctx) => {
-    // Note that elysia handles json parsing for me - neat!
-    const payload = ctx.body;
-    const result = await run("echo", payload as any);
-
-    // elysia will also stringify and set the headers if I return json
-    return result;
-  });
-
-  return app;
-});
+await setupServices(app);
 
 export default (port: number | string = 3000) => {
   console.log("Apollo Server listening on ", port);

@@ -9,14 +9,14 @@ const py = nodecallspython.interpreter;
 // Obviously if we have a lot of services and we load on startup, it'll slow the server
 // Ok so the TODO here is to import modules on command
 // (and maybe preload some core stuff)
-export const run = async (scriptName: string, args: JSON) => {
+export const run = async (scriptName: string, fnName: string, args: JSON) => {
   try {
     const pymodule = await py.import(
       path.resolve(`./services/${scriptName}/${scriptName}.py`),
       true
     );
 
-    const result = await py.call(pymodule, scriptName, args);
+    const result = await py.call(pymodule, fnName, args);
 
     return result;
   } catch (e) {
