@@ -53,3 +53,11 @@ We call out to a live python environment from node, using a library called
 node-python bindings can see your poetry environment.
 
 The `node-calls-python` setup currently relies on a hard-coded
+
+## Installing models
+
+To add models as python packages:
+
+- Copy the `.whl` file to `/models` at the repo root
+- Add the file to poetry (you should be able to do
+  `poetry add models/<my-model>.whl`)
