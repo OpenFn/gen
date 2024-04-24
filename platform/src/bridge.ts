@@ -11,6 +11,13 @@ const py = nodecallspython.interpreter;
 // (and maybe preload some core stuff)
 export const run = async (scriptName: string, fnName: string, args: JSON) => {
   try {
+    // poetry should be configured to use a vnv in the local filesystem
+    // This makes it really easy to tell node-calls-python about the right env!
+    // TODO: Ah,not THAT easy, we need to work out the python version
+    py.addImportPath(path.resolve(".venv/lib/python3.11/site-packages"));
+
+    // TODO in dev mode I want to re-import the module every time
+    // But in prod I wanna use the cached import
     const pymodule = await py.import(
       path.resolve(`./services/${scriptName}/${scriptName}.py`),
       true

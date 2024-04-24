@@ -6,6 +6,7 @@ tmp
 # Poetry specific files and directories
 .poetry/
 __pypackages__/
+.venv
 
 # node.js stuff
 node_modules

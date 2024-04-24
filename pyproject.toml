@@ -1,14 +1,16 @@
 [tool.poetry]
-name = "code-generator"
+name = "apollo"
 version = "0.1.0"
 description = "A python monorepo for AI code generation"
 authors = ["Isma-Ilou Sadou <isma@openfn.org>"]
 license = "LGPLv3"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.31.0"
+fastapi = "^0.110.2"
 
 
 [build-system]
@@ -20,34 +22,34 @@ line-length = 120
 
 [tool.ruff]
 select = [
-    "E",    # pycodestyle
-    "F",    # pyflakes
-    "W",    # pycodestyle (warnings)
-    "I",    # isort
-    "N",    # pep8-naming
-    "UP",   # pyupgrade
-    "ANN",  # flake8-annotations
-    "B",    # flake8-bugbear
-    "A",    # flake8-builtins
-    "COM",  # flake8-commas
-    "C4",   # flake8-comprehensions
-    "DTZ",  # flake8-datetimez
-    "EXE",  # flake8-executable
-    "PIE",  # flake8-pie
-    "T20",  # flake8-print
-    "PT",   # flake8-pytest
-    "SIM",  # flake8-simplify
-    "ARG",  # flake8-unused-arguments
-    "PTH",  # flake8--use-pathlib
-    "ERA",  # flake8-eradicate
-    "RUF",  # ruff specific rules
-    "PL",   # pylint
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "W",   # pycodestyle (warnings)
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "ANN", # flake8-annotations
+    "B",   # flake8-bugbear
+    "A",   # flake8-builtins
+    "COM", # flake8-commas
+    "C4",  # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "EXE", # flake8-executable
+    "PIE", # flake8-pie
+    "T20", # flake8-print
+    "PT",  # flake8-pytest
+    "SIM", # flake8-simplify
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8--use-pathlib
+    "ERA", # flake8-eradicate
+    "RUF", # ruff specific rules
+    "PL",  # pylint
 ]
 ignore = [
     "ANN101", # Missing type annotation for self in method
     "ANN204", # Missing type annotation for special method
     "ANN003", # Missing type annotation for `**kwargs`
-    "UP007", # Use `X | Y` for type annotations instead of Union
+    "UP007",  # Use `X | Y` for type annotations instead of Union
     "E501",
 ]
 line-length = 120
