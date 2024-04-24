@@ -40,3 +40,14 @@ To start the server, run:
 ```bash
 bun run start
 ```
+
+## Python Setup
+
+This repo uses `poetry` to manage dependencies.
+
+We use an "in-project" venv , which means a `.venv` folder will be created when
+you run `poetry install`.
+
+We call out to a live python environment from node, using a library called
+`node-calls-python`. We pass in the path to the local `.venv` folder so that the
+node-python bindings can see your poetry environment.
