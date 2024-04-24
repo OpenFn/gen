@@ -3,9 +3,9 @@
 A bunjs-based webserver which hosts a number of data and code generation
 services
 
-## Pre-requisistes
+## Reqiurements
 
-- python3
+- python 3.11 (yes, 3.11 exactly, see Python Setup)
 - poetry
 - bunjs
 
@@ -51,3 +51,5 @@ you run `poetry install`.
 We call out to a live python environment from node, using a library called
 `node-calls-python`. We pass in the path to the local `.venv` folder so that the
 node-python bindings can see your poetry environment.
+
+The `node-calls-python` setup currently relies on a hard-coded
