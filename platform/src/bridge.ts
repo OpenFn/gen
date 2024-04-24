@@ -9,10 +9,6 @@ const PYTHON_VERSION = "3.11";
 
 const py = nodecallspython.interpreter;
 
-// TODO: should we load modules on startup or ondemand?
-// Obviously if we have a lot of services and we load on startup, it'll slow the server
-// Ok so the TODO here is to import modules on command
-// (and maybe preload some core stuff)
 export const run = async (scriptName: string, fnName: string, args: JSON) => {
   try {
     // poetry should be configured to use a vnv in the local filesystem
@@ -21,18 +17,22 @@ export const run = async (scriptName: string, fnName: string, args: JSON) => {
     py.addImportPath(
       path.resolve(`.venv/lib/python${PYTHON_VERSION}/site-packages`)
     );
+    py.addImportPath(path.resolve("services"));
 
-    // TODO in dev mode I want to re-import the module every time
-    // But in prod I wanna use the cached import
+    // In production, only import a module once
+    // But in dev, re-import every time
+    const cache = process.env.NODE_ENV !== "production";
+
     const pymodule = await py.import(
       path.resolve(`./services/${scriptName}/${scriptName}.py`),
-      true
+      cache
     );
 
     const result = await py.call(pymodule, fnName, args);
 
     return result;
   } catch (e) {
+    // Note that the error coming out will be a string with no stack trace :(
     console.log(e);
   }
 };

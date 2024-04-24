@@ -8,13 +8,15 @@ from src.utils import (
     parse_openapi_spec,
     trim_signature,
 )
+import sys
+
+from inference.main import generate
+
 
 # TODO the platform should deal with logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-#async def main(data: SignatureInput) -> dict:
 
 # Parse the incoming dict into an object that's a bit nicer to use
 # TODO surely I can automate this somehow?
@@ -44,12 +46,13 @@ def main(dataDict) -> dict:
         prompt_template, spec=api_info, instruction=data.instruction
     )
 
-    signature = generator.generate(prompt)[0]
+    # TODO this ought to be cleaned up
+    signature = generate(data.model, prompt)['generated_code'][0]
     signature = trim_signature(signature)
 
     logger.info("Signature generation complete")
+    logger.info(signature)
     return {"signature": signature}
-    return data
 
 
 if __name__ == "__main__":
