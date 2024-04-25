@@ -1,9 +1,9 @@
 import logging
 
-# why are these relative imports but sig-gen is absolute?
-# I think it's because if I call sig-gen, it's all relative to sig-gen
-from ..models.gpt3_turbo import GPT3Turbo
-from ..schemas.models import CodeOutput, MessageInput
+# We have to use absolute paths because other services 
+# call into this
+from inference.src.models.gpt3_turbo import GPT3Turbo
+from inference.src.schemas.models import CodeOutput, MessageInput
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
