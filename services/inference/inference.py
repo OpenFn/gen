@@ -1,7 +1,7 @@
 import logging 
 
-from src.api.gpt3_turbo import generate_code
-from src.schemas.models import MessageInput
+from .src.api.gpt3_turbo import generate_code
+from .src.schemas.models import MessageInput
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -2,8 +2,8 @@ import logging
 
 # We have to use absolute paths because other services 
 # call into this
-from src.models.gpt3_turbo import GPT3Turbo
-from src.schemas.models import CodeOutput, MessageInput
+from ..models.gpt3_turbo import GPT3Turbo
+from ..schemas.models import CodeOutput, MessageInput
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -52,7 +52,35 @@ We call out to a live python environment from node, using a library called
 `node-calls-python`. We pass in the path to the local `.venv` folder so that the
 node-python bindings can see your poetry environment.
 
-The `node-calls-python` setup currently relies on a hard-coded
+The `node-calls-python` setup currently relies on a hard-coded python version.
+If the python version is changed, this value will need updating.
+
+## Python Modules
+
+Any subfolder not starting with `_` in the `services` folder will be
+automatically mounted at
+
+```
+/services/<service_name>
+```
+
+You need a `<service-name>.py` file in the root folder with a `main()` function.
+This will be called by the web server when someone makes a post request to your
+endpoint, passing the JSON payload as a dict.
+
+The main function should return a JSON payload, which will be appended to the
+response body and returned.
+
+Inside your module folder, you can use whatever structure you like. Run
+`poetry add <module>` to add dependencies (they'll be installed at the root
+level `pyproject.toml`).
+
+You should use relative paths to import py files in the service, or absolute
+module names (relative to `/services/`).
+
+The Javascript bridge will always call into `entry.py` and dyamically invoke
+your service's main function, so technically speaking all imports are relative
+to `entry.py`.
 
 ## Installing models
 

@@ -11,7 +11,7 @@ const py = nodecallspython.interpreter;
 
 // TODO do I need to run an init script to set the context or something?
 
-export const run = async (scriptName: string, fnName: string, args: JSON) => {
+export const run = async (scriptName: string, args: JSON) => {
   try {
     // poetry should be configured to use a vnv in the local filesystem
     // This makes it really easy to tell node-calls-python about the right env!
@@ -25,12 +25,13 @@ export const run = async (scriptName: string, fnName: string, args: JSON) => {
     // But in dev, re-import every time
     const cache = process.env.NODE_ENV !== "production";
 
+    // import from a top level entry point
     const pymodule = await py.import(
-      path.resolve(`./services/${scriptName}/${scriptName}.py`),
+      path.resolve(`./services/entry.py`),
       cache
     );
 
-    const result = await py.call(pymodule, fnName, args);
+    const result = await py.call(pymodule, "main", [scriptName, args]);
 
     return result;
   } catch (e) {

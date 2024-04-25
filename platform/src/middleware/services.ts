@@ -14,7 +14,7 @@ export default async (app: Elysia) => {
       app.post(name, async (ctx) => {
         // Note that elysia handles json parsing for me - neat!
         const payload = ctx.body;
-        const result = await run(name, "main", payload as any);
+        const result = await run(name, payload as any);
 
         // elysia will also stringify and set the headers if I return json
         return result;

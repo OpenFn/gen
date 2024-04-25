@@ -1,8 +1,8 @@
 import logging
 
-from src.models import SignatureGenerator, SignatureInput
-from src.prompts import generate_prompt
-from src.utils import (
+from .src.models import SignatureGenerator, SignatureInput
+from .src.prompts import generate_prompt
+from .src.utils import (
     extract_api_info,
     get_model_endpoint,
     parse_openapi_spec,
@@ -46,11 +46,9 @@ def main(dataDict) -> dict:
         prompt_template, spec=api_info, instruction=data.instruction
     )
 
-    signature = "x"
-
     # TODO this ought to be cleaned up
-    # signature = generate(data.model, prompt)['generated_code'][0]
-    # signature = trim_signature(signature)
+    signature = generate(data.model, prompt)['generated_code'][0]
+    signature = trim_signature(signature)
 
     logger.info("Signature generation complete")
     logger.info(signature)
