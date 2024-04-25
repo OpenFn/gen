@@ -1,27 +1,28 @@
 import logging
+from typing import Union
 
-from .src.models import SignatureGenerator, SignatureInput
-from .src.prompts import generate_prompt
-from .src.utils import (
+from .prompts import generate_prompt
+from .utils import (
     extract_api_info,
     get_model_endpoint,
     parse_openapi_spec,
     trim_signature,
 )
-import sys
 
 from inference.inference import generate
-
 
 # TODO the platform should deal with logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 # Parse the incoming dict into an object that's a bit nicer to use
 # TODO surely I can automate this somehow?
 # fastapi seems to do it pretty well
 class Payload:
+  open_api_spec: Union[str, dict]
+  instruction: str
+  model: str = "codet5"
+
   def __init__(self, dict):
     self.model = dict['model']
     self.open_api_spec = dict['open_api_spec']
@@ -31,7 +32,6 @@ def main(dataDict) -> dict:
     data = Payload(dataDict)
 
     logger.info(f"Generating signature for model {data.model}")
-    generator = SignatureGenerator(get_model_endpoint(data.model))
 
     logger.info("Parsing OpenAPI specification")
     parsed_spec = parse_openapi_spec(data.open_api_spec)
