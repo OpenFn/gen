@@ -10,7 +10,7 @@ from src.utils import (
 )
 import sys
 
-from inference.main import generate
+from inference.inference import generate
 
 
 # TODO the platform should deal with logging
@@ -46,9 +46,11 @@ def main(dataDict) -> dict:
         prompt_template, spec=api_info, instruction=data.instruction
     )
 
+    signature = "x"
+
     # TODO this ought to be cleaned up
-    signature = generate(data.model, prompt)['generated_code'][0]
-    signature = trim_signature(signature)
+    # signature = generate(data.model, prompt)['generated_code'][0]
+    # signature = trim_signature(signature)
 
     logger.info("Signature generation complete")
     logger.info(signature)
