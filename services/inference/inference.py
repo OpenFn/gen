@@ -1,7 +1,7 @@
 import logging 
 
 from .models.gpt3_turbo import generate as gpt3_turbo
-from .schemas import MessageInput
+from .schemas import MessageInput, GenOutput
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,8 +24,11 @@ def main(dataDict):
   return result
 
 # This can be used by other modules
-def generate(model, prompt):
+def generate(model, prompt, key):
+    result = ''
+
     # TODO maybe I can use dynamic module resolution now?
     if (model == "gpt3_turbo"):
-      return gpt3_turbo(prompt)
-    return [""]
+      result = gpt3_turbo(prompt, key)
+    
+    return GenOutput(result)

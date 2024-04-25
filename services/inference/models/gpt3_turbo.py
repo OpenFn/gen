@@ -7,7 +7,7 @@ from ..schemas import CodeOutput
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# TODO this API key should be in the request, not the env
+# Load the API key as a default
 OPENAI_API_KEY = os.getenv(
     "OPENAI_API_KEY",
 )
@@ -15,10 +15,15 @@ OPENAI_API_KEY = os.getenv(
 """
 Generates a response from the GPT-3.5 Turbo model
 """
-def generate(prompt) -> CodeOutput:
+def generate(prompt, api_key) -> CodeOutput:
     # for now we'll create a new client for every request
     # idk the pros or cons of this - check the docs I guess!
-    client = OpenAI(api_key=OPENAI_API_KEY)
+    if not api_key and OPENAI_API_KEY:
+        logger.warn('Using default API key from environment')
+        api_key = OPENAI_API_KEY
+
+
+    client = OpenAI(api_key=api_key)
     logger.info(f"OpenAI GPT-3.5 Turbo client loaded.")
 
     try:
@@ -37,6 +42,6 @@ def generate(prompt) -> CodeOutput:
         else:
             logger.info('done')
 
-        return {"result": [result]}
+        return result
     except Exception as e:
         logger.error(f"An error occurred during GPT-3.5 Turbo code generation: {e}")

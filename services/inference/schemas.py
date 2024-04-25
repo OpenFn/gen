@@ -16,3 +16,9 @@ class MessageInput(BaseModel):
 
 class CodeOutput(BaseModel):
     generated_code: list[str]
+
+
+class GenOutput():
+    result: str
+    def __init__(self, result):
+        self.result = result

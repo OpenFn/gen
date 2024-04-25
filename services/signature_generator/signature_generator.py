@@ -27,9 +27,12 @@ class Payload:
     self.model = dict['model']
     self.open_api_spec = dict['open_api_spec']
     self.instruction = dict['instruction']
+    self.api_key = dict['api_key'] if 'api_key' in dict else None
 
 def main(dataDict) -> dict:
     data = Payload(dataDict)
+
+    # TODO: validate args and throw if anything looks amiss
 
     logger.info(f"Generating signature for model {data.model}")
 
@@ -46,8 +49,7 @@ def main(dataDict) -> dict:
         prompt_template, spec=api_info, instruction=data.instruction
     )
 
-    # TODO this ought to be cleaned up
-    signature = generate(data.model, prompt)['generated_code'][0]
+    signature = generate(data.model, prompt, data.api_key).result
     signature = trim_signature(signature)
 
     logger.info("Signature generation complete")
