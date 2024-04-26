@@ -16,7 +16,6 @@ Generate from text using the CodeT5 model
 """
 
 
-# TODO this seemm to return nonsense output - maybe that's just a bad test prompt?
 def generate(
     prompt,
     max_length: int = 1024,
