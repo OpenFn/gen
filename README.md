@@ -106,3 +106,14 @@ I need to:
 
 Update: actually, for JS we use prettier. Why not just use prettier for both
 languages?! We just need to ensure the setup is minimal
+
+## Local development
+
+- `bun watch` will reload the typescript platform & python services whenever
+  there's a change
+- use the .env in services to configure your environment
+- use url or the CLI to test your endpoints
+- see the contributing guide for more details
+
+Note that we canont yet use `bun --watch` to restart the server, because we also
+need to track changes in python land. So for no we use nodemon

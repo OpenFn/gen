@@ -5,6 +5,7 @@
   "scripts": {
     "start": "NODE_ENV=production bun platform/src/index.ts",
     "dev": "bun --watch platform/src/index.ts",
+    "watch": "nodemon --exec bun platform/src/index.ts",
     "build": "bun build platform/src/index.ts",
     "test": "bun test platform/test "
   },
@@ -17,9 +18,14 @@
   "dependencies": {
     "elysia": "^1.0.13",
     "node-calls-python": "^1.8.4",
-    "node-gyp": "^10.1.0"
+    "node-gyp": "^10.1.0",
+    "nodemon": "^3.1.0"
   },
   "trustedDependencies": [
     "node-calls-python"
-  ]
+  ],
+  "nodemonConfig": {
+    "watch": ["platform/src", "services"],
+    "ext": "ts, py"
+  }
 }
