@@ -1,5 +1,7 @@
 import logging
 
+import inference.inference
+
 from .prompts import generate_prompt
 from .utils import (
     extract_api_info,
@@ -8,7 +10,7 @@ from .utils import (
 )
 from util import DictObj
 
-from inference.inference import generate
+from inference import inference
 
 # TODO the platform should deal with logging
 logging.basicConfig(level=logging.INFO)
@@ -17,8 +19,9 @@ logger = logging.getLogger(__name__)
 
 class Payload(DictObj):
     api_key: str
-    open_api_spec: str
+    open_api_spec: dict
     instruction: str
+    model: str
 
 
 def main(dataDict) -> dict:
@@ -26,19 +29,28 @@ def main(dataDict) -> dict:
 
     # TODO: validate args and throw if anything looks amiss
 
-    logger.info(f"Generating signature for model {data.model}")
+    # TODO passing the spec as a DictObj fails - this is annoying.
+    result = generate(data.model, dataDict["open_api_spec"], data.instruction, data.get("api_key"))
+
+    return result
+
+
+# TODO the final argument needs to be more broad to support different models
+def generate(model, spec, instruction, key):
+    logger.info(f"Generating signature for model {model}")
 
     logger.info("Parsing OpenAPI specification")
-    parsed_spec = parse_openapi_spec(data.open_api_spec)
+    parsed_spec = parse_openapi_spec(spec)
 
     logger.info("Extracting API information from parsed spec with provided instruction")
-    api_info = extract_api_info(parsed_spec, data.instruction)
+    api_info = extract_api_info(parsed_spec, instruction)
 
-    prompt_template = "signature" if data.model == "gpt3_turbo" else "signature_text"
-    logger.info(f"Generating {data.model} prompt for signature generation")
+    prompt_template = "signature" if model == "gpt3_turbo" else "signature_text"
+    logger.info(f"Generating {model} prompt for signature generation")
 
-    prompt = generate_prompt(prompt_template, spec=api_info, instruction=data.instruction)
-    signature = generate(data.model, prompt, {"key": data.get("api_key")})
+    prompt = generate_prompt(prompt_template, spec=api_info, instruction=instruction)
+
+    signature = inference.generate(model, prompt, {"key": key})
     signature = trim_signature(signature)
 
     logger.info("Signature generation complete")

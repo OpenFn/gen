@@ -29,7 +29,6 @@ def generate(prompt, api_key) -> str:
 
     try:
         logger.info("Generating")
-        print(prompt)
         max_tokens = 256  # TODO maybe take an option for this?
         response = client.chat.completions.create(
             messages=prompt,

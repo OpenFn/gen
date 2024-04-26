@@ -5,10 +5,11 @@ from .utils import (
     generate_code_prompt,
 )
 
-from inference.inference import generate
+from inference import inference
 
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Payload(DictObj):
@@ -17,11 +18,18 @@ class Payload(DictObj):
     model: str
 
 
-# generate adaptr code based on a model and signature
+# generate adaptor code based on a model and signature
 def main(dataDict) -> str:
     data = Payload(dataDict)
 
-    prompt = generate_code_prompt(data.model, data.signature)
-    result = generate(data.model, prompt, {"key": data.get("api_key")})
+    result = generate(data.model, data.signature, data.get("api_key"))
+
+    return result
+
+
+def generate(model, signature, key) -> str:
+    prompt = generate_code_prompt(model, signature)
+
+    result = inference.generate(model, prompt, {"key": key})
 
     return result
