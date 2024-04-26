@@ -54,6 +54,7 @@ def generate(model, prompt, args):
         result = gpt3_turbo(prompt, args.get("key"))
     if model == "codet5":
         result = codet5(prompt)
+    # llama2 is broken
 
     # TODO should we not just return a string? ¯\_(ツ)_/¯
     return GenOutput(result)
