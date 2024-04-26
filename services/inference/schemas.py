@@ -18,7 +18,11 @@ class CodeOutput(BaseModel):
     generated_code: list[str]
 
 
-class GenOutput():
-    result: str
+class GenOutput:
+    text: str
+
     def __init__(self, result):
-        self.result = result
+        self.text = result
+
+    def __repr__(self):
+        return self.text

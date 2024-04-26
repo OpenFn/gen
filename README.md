@@ -89,3 +89,17 @@ To add models as python packages:
 - Copy the `.whl` file to `/models` at the repo root
 - Add the file to poetry (you should be able to do
   `poetry add models/<my-model>.whl`)
+
+## Code Style
+
+Code should be formated with black
+
+I've removed the old pre-commit hook (the idea of changing code invisibly,
+before a commit, terrifes me utterly)
+
+I need to:
+
+1. install a linter which can fail in CI (or locally) if there are formatting
+   issues
+2. encourage here a format-on-save approach
+3. make it really easy to install and configure Black?

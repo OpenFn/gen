@@ -9,8 +9,6 @@ const PYTHON_VERSION = "3.11";
 
 const py = nodecallspython.interpreter;
 
-// TODO do I need to run an init script to set the context or something?
-
 export const run = async (scriptName: string, args: JSON) => {
   try {
     // poetry should be configured to use a vnv in the local filesystem
@@ -32,7 +30,6 @@ export const run = async (scriptName: string, args: JSON) => {
     );
 
     const result = await py.call(pymodule, "main", [scriptName, args]);
-
     return result;
   } catch (e) {
     // Note that the error coming out will be a string with no stack trace :(
