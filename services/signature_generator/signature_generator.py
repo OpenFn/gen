@@ -42,7 +42,7 @@ def main(dataDict) -> dict:
     signature = trim_signature(signature)
 
     logger.info("Signature generation complete")
-    return {"signature": signature}
+    return signature
 
 
 # for local testing
