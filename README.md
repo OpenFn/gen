@@ -103,3 +103,6 @@ I need to:
    issues
 2. encourage here a format-on-save approach
 3. make it really easy to install and configure Black?
+
+Update: actually, for JS we use prettier. Why not just use prettier for both
+languages?! We just need to ensure the setup is minimal
