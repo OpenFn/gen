@@ -2,7 +2,6 @@ import logging
 import os
 
 from openai import OpenAI
-from ..schemas import CodeOutput
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,7 +17,7 @@ Generates a response from the GPT-3.5 Turbo model
 """
 
 
-def generate(prompt, api_key) -> CodeOutput:
+def generate(prompt, api_key) -> str:
     if api_key is None and isinstance(OPENAI_API_KEY, str):
         logger.warn("Using default API key from environment")
         api_key = OPENAI_API_KEY

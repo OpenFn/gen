@@ -114,6 +114,7 @@ languages?! We just need to ensure the setup is minimal
 - use the .env in services to configure your environment
 - use url or the CLI to test your endpoints
 - see the contributing guide for more details
+- tmp folders are untracked. You should save test payloads in those
 
 Note that we canont yet use `bun --watch` to restart the server, because we also
 need to track changes in python land. So for no we use nodemon
