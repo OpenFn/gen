@@ -5,7 +5,7 @@ Want to contribute to OpenFn Apollo? Read on.
 For technical details about the server architecture (including how the JS server
 calls python modules), see the main readme.
 
-## Adding a Python Modules
+## Adding a Python Module
 
 Your python service can be your own little world inside Apollo. We give you a
 subfolder and couple of conventions to stick to, and that's it.
@@ -29,10 +29,25 @@ Inside your module folder, you can use whatever structure you like. Run
 `poetry add <module>` to add dependencies (they'll be installed at the root
 level `pyproject.toml`).
 
-You should use relative paths to import py files in the service, or absolute
-module names (relative to `/services/`).
+**You should use relative paths to import py files in the same service, or
+absolute module names (relative to `/services/`) to import from other
+services.**
 
-The Javascript bridge will always call into `entry.py` and dyamically invoke
+ie, from `services/example/example.py`, to load `services/example/util.py`, do:
+
+```python
+from .util import my_function
+```
+
+To load from a different module (like `inference`), do:
+
+```python
+from inference import inference
+
+inference.generate('gpt3', 'do the thing')
+```
+
+The Javascript bridge will always call into `entry.py` and dynamically invoke
 your service's main function, so technically speaking all imports are relative
 to `entry.py`.
 
@@ -48,15 +63,35 @@ with the first text paragraph used as a summary.
 
 For example best practice, see `services/adaptor_gen`
 
-## Debugging
+## Calling python Directly
 
-TODO - this section is work in progress
+Debugging through the web server can be hard because error messages are pretty
+terse.
 
-Debugging through the web server can be a bit hard because error messages are
-pretty terse.
+You can call straight into your python - with the poetry environment all set up
+and everything - from the CLI.
 
-TODO this repo should provide a means to call a python's main and pass json into
-it.
+From the repo root, just run:
+
+```bash
+bun py <service-name> [path/to/input.json]
+```
+
+For example:
+
+```bash
+bun py echo tmp/payload.json
+```
+
+This will call the `echo` service via `entry.py`, which sets up the right paths
+etc. You can optionally include a path to the payload, which will be loaded as
+JSON and passed to the module.
+
+Running code this way is exactly the same as doing it through the webserver -
+you're bypassing the HTTP layer but otherwise invoking your python the same way.
+
+You don't need to create your own `if __name__ == "__main__":` logic inside oyur
+python scripts - `entry.py` will do all that for you.
 
 ## Use Env
 

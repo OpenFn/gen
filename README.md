@@ -97,6 +97,15 @@ node-python bindings can see your poetry environment.
 The `node-calls-python` setup currently relies on a hard-coded python version.
 If the python version is changed, this value will need updating.
 
+All python is invoked through `entry.py`, which loads the environment properly
+so that relative imports work.
+
+You can invoke entry.py directly (ie, without HTTP) through bun from the root:
+
+```
+bun py echo tmp/payload.json
+```
+
 ## Installation Troubleshooting
 
 - Ensure all dependencies are installed
