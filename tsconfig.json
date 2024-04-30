@@ -5,8 +5,13 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
-    "jsx": "react-jsx",
     "allowJs": true,
+    //"jsx": "react-jsx",
+    
+     // elysia wants this
+    "jsx": "react",
+    "jsxFactory": "Html.createElement",
+    "jsxFragmentFactory": "Html.Fragment",
 
     // Bundler mode
     "moduleResolution": "bundler",
@@ -23,5 +28,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
+
   }
 }

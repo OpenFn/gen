@@ -1,19 +1,14 @@
 import { Elysia } from "elysia";
 
+import setupDir from "./middleware/dir";
 import setupServices from "./middleware/services";
+import { html } from "@elysiajs/html";
 
 export const app = new Elysia();
 
-// This is bit of an elysia tutorial for now
-app.get("/", (ctx) => {
-  ctx.set.status = 200; // set the return status
+app.use(html());
 
-  // set headers through context
-  ctx.set.headers["Content-Type"] = "application/text";
-
-  return "openfn apollo";
-});
-
+setupDir(app);
 await setupServices(app);
 
 export default (port: number | string = 3000) => {
