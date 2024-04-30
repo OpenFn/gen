@@ -26,6 +26,7 @@ def main(dataDict):
 
     logger.info("prompt: " + prompt)
 
+    # TODO actually there's no point in returning the d.ts right? It's academic at this point
     sig = sig_gen.generate(data.model, dataDict["open_api_spec"], prompt, data.get("api_key"))
     result["Adaptor.d.ts"] = sig
 

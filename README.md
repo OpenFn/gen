@@ -55,26 +55,15 @@ usage examples.
 See the Contribution Guide for more details about how and where to contribute to
 the Apollo platform.
 
-## Local development
-
-- `bun watch` will reload the typescript platform & python services whenever
-  there's a change
-- use the .env in services to configure your environment
-- use url or the CLI to test your endpoints
-- see the contributing guide for more details
-- tmp folders are untracked. You should save test payloads in those
-
-Note that we canont yet use `bun --watch` to restart the server, because we also
-need to track changes in python land. So for no we use nodemon
-
-## Environments
-
-TODO - this section is work in progress
+## API Keys & Env vars
 
 Some services require API keys.
 
-Rather than coding these into your JSON payloads directly, key s can be loaded
-from the .env file at the root. [Citation needed]
+Rather than coding these into your JSON payloads directly, keys can be loaded
+from the `.env` file at the root.
+
+Also note that `tmp` dirs are untracked, so if you do want to store credentials
+in your json, keep in inside a tmp dir and it'll remain safe and secret.
 
 ## Server Architecture
 

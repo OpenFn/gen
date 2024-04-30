@@ -10,14 +10,6 @@ logger = logging.getLogger(__name__)
 nlp = spacy.load("en_core_web_sm")
 
 
-def get_model_endpoint(model_name: str) -> str:
-    """
-    Get the endpoint for the model
-    """
-    base_url = os.getenv("INFERENCE_BASEURL", "http://localhost:8003/")
-    return f"{base_url}{model_name.lower()}/generate_code/"
-
-
 def trim_signature(signature: str) -> str:
     end_tokens = "==="
     if end_tokens in signature:
@@ -58,24 +50,18 @@ def get_schema_info(schema: dict[str, any], spec: dict[str, any]) -> list[dict]:
     if "$ref" in schema:
         schema_type = schema["$ref"].split("/")[-1]
         properties = spec["components"]["schemas"][schema_type]["properties"]
-        return schema_type, [
-            {"name": key, "type": value["type"]} for key, value in properties.items()
-        ]
+        return schema_type, [{"name": key, "type": value["type"]} for key, value in properties.items()]
     elif "items" in schema:
         items = schema["items"]
         if "$ref" in items:
             schema_type = items["$ref"].split("/")[-1]
             properties = spec["components"]["schemas"][schema_type]["properties"]
             schema_type = f"list[{schema_type}]"
-            return schema_type, [
-                {"name": key, "type": value["type"]}
-                for key, value in properties.items()
-            ]
+            return schema_type, [{"name": key, "type": value["type"]} for key, value in properties.items()]
     else:
         schema_type = schema.get("type")
         return schema_type, [
-            {"name": key, "type": value["type"]}
-            for key, value in schema.get("properties", {}).items()
+            {"name": key, "type": value["type"]} for key, value in schema.get("properties", {}).items()
         ]
 
 
@@ -88,12 +74,7 @@ def parse_openapi_spec(spec: dict[str, any]) -> list[dict]:
                 current_operation = {
                     "method": method.upper(),
                     "parameters": [
-                        param
-                        for param in (
-                            extract_parameter(p)
-                            for p in operation.get("parameters", [])
-                        )
-                        if param
+                        param for param in (extract_parameter(p) for p in operation.get("parameters", [])) if param
                     ],
                     "responses": [
                         extract_schema(response_code, response, spec)
@@ -120,9 +101,7 @@ def lemmatize_action(action: str) -> str:
 def find_closest_verb(endpoint_token: Token) -> str:
     # Iterate over the ancestors of the token (including itself) until a verb is found
     current_token = endpoint_token
-    while current_token is not None and (
-        current_token.pos_ != "VERB" or current_token.text.lower() == "endpoint"
-    ):
+    while current_token is not None and (current_token.pos_ != "VERB" or current_token.text.lower() == "endpoint"):
         current_token = current_token.head
 
     # If a verb is found, return it; otherwise, return None
@@ -136,11 +115,7 @@ def find_closest_verb(endpoint_token: Token) -> str:
 def find_related_verb(endpoint_token: Token, doc: Doc) -> str:
     # Find the verb related to the endpoint by searching for the nearest verb to the endpoint
     for token in doc:
-        if (
-            token.head == endpoint_token
-            and token.pos_ == "VERB"
-            and token.text.lower() != "endpoint"
-        ):
+        if token.head == endpoint_token and token.pos_ == "VERB" and token.text.lower() != "endpoint":
             return lemmatize_action(token.text.lower())
     return None
 
@@ -212,11 +187,7 @@ def extract_api_info(api_spec: dict, instruction: str) -> dict[str, any]:
             operations = endpoint_info.get("operations", [])
             for operation in operations:
                 method = action_method_mapping.get(action)
-                if (
-                    method
-                    and "method" in operation
-                    and operation["method"].upper() == method
-                ):
+                if method and "method" in operation and operation["method"].upper() == method:
                     api_info = {
                         "endpoint": endpoint,
                         "action": action,

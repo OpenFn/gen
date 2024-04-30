@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 
-# TODO I don't know if this works
+# This will load from the ../.env file (at root)
 load_dotenv()
 
 

@@ -6,8 +6,6 @@ from openai import OpenAI
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Load the API key as a default
-# TODO why has this stopped working?!!
 OPENAI_API_KEY = os.getenv(
     "OPENAI_API_KEY",
 )

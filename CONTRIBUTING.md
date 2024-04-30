@@ -60,12 +60,12 @@ it.
 
 ## Use Env
 
-TODO - this section is work in progress
-
 If your services requires an API key, you should:
 
 - accept the key on your json payload
-- if no key is provided, load a key from dotenv
+- if no key is provided, load a from the environment
+
+Use a `.env` file at root and add your own keys to it (see `.env.example`)
 
 dotenvs are only suitable for local development.
 
