@@ -50,11 +50,6 @@ To communicate with and test the server, you can use `@openfn/cl`.
 TODO: this needs implemnenting and this section needs to be filled out with
 usage examples.
 
-## Contributing
-
-See the Contribution Guide for more details about how and where to contribute to
-the Apollo platform.
-
 ## API Keys & Env vars
 
 Some services require API keys.
@@ -114,3 +109,8 @@ bun py echo tmp/payload.json
 - Ensure that `node-calls-python` has been built. In
   `node_modules/node-calls-python` there should be a `Relesae` folder with stuff
   inside.
+
+## Contributing
+
+See the Contribution Guide for more details about how and where to contribute to
+the Apollo platform.

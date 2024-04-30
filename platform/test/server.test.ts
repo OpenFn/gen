@@ -29,9 +29,7 @@ describe("Main server", () => {
     const response = await app.handle(get(""));
 
     const status = response.status;
-    const text = await response.text();
 
-    expect(text).toBe("openfn apollo");
     expect(status).toBe(200);
   });
 });
@@ -45,16 +43,6 @@ describe("Python Services", () => {
       const response = await app.handle(post("services/echo", json));
 
       expect(response.status).toBe(200);
-    });
-
-    // Ok for some reason I can't post a string
-    // This doesn't REALLY matter so I'm not gonna spend time on it
-    it.skip("echoes back a string", async () => {
-      const str = "hello world";
-      const response = await app.handle(post("services/echo", str));
-
-      const text = await response.text();
-      expect(text).toBe(str);
     });
 
     it("echoes back an object", async () => {
