@@ -10,10 +10,10 @@ It is generally used by other services.
 
 ## HTTP access
 
-Although the inference service is designd to be called from python, you can call
-it directly through HTTP:
+Although the inference service is designed to be called from python, you can
+call it through HTTP:
 
-```
+```bash
 curl -x POST localhost:3000/services/inference --json @tmp/input.json
 ```
 
@@ -21,7 +21,7 @@ The input data must contain a propt and a model. It can also contain extra
 arguments, which will be passed through to the particular model you want to
 call.
 
-```
+```json
 {
   "prompt": "what is openfn?",
   "model": "gpt3_turbo",

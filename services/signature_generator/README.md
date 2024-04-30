@@ -1,9 +1,11 @@
 ## Signature Generator
 
-This service generates Typescript signature for an adaptor to serve one endpoint
-of a REST API.
+This service generates a Typescript signature for an adaptor to serve ONE
+endpoint of a REST API.
 
-An OpenAPI spec of the Rest API must be included in the request
+An OpenAPI spec of the Rest API must be included in the request.
+
+This service is designed for use in the adaptor generator pipeline.
 
 ## Usage
 
@@ -39,3 +41,6 @@ this is the case.
 
 This service is mostly concerned with generating the prompt that will be sent to
 the model. The heavy-lifting is handled by the inference service.
+
+The service is intentionally restricted to only generate a single signature for
+a single endpoint.
