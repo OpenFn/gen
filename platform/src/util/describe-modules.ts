@@ -25,10 +25,11 @@ export default async (location: string): Promise<ModuleDescription[]> => {
 
       const lines = rm.split("\n");
       // for a summary, find the first non-empty, non-title line
-      let summary;
+      let summary = "";
       for (const l of lines) {
         if (l.length && !l.startsWith("#")) {
-          summary = l;
+          summary += " " + l;
+        } else if (summary) {
           break;
         }
       }
