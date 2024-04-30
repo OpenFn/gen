@@ -9,7 +9,7 @@ export default async (app: Elysia) => {
   console.log("Loading routes:");
   const modules = await describeModules(path.resolve("./services"));
   app.group("/services", (app) => {
-    modules.forEach(({ name }) => {
+    modules.forEach(({ name, readme }) => {
       console.log(" - mounted /services/" + name);
       app.post(name, async (ctx) => {
         // Note that elysia handles json parsing for me - neat!
@@ -19,6 +19,9 @@ export default async (app: Elysia) => {
         // elysia will also stringify and set the headers if I return json
         return result;
       });
+
+      // TODO: it would be lovely to render the markdown into nice rich html
+      app.get(`/${name}/README.md`, async (ctx) => readme);
     });
 
     return app;
