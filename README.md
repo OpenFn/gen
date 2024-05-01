@@ -110,6 +110,20 @@ bun py echo tmp/payload.json
   `node_modules/node-calls-python` there should be a `Relesae` folder with stuff
   inside.
 
+## Docker
+
+To build the docker image:
+
+```bash
+docker build .  -t openfn-apollo
+```
+
+To run it on port 3000
+
+```bash
+docker run openfn-apollo -p 3000:3000
+```
+
 ## Contributing
 
 See the Contribution Guide for more details about how and where to contribute to

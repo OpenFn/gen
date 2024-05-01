@@ -1,33 +1,25 @@
-# debian bun includes pythonn (for node-gyp)
-FROM oven/bun:1.1.4-debian
-
-# the bun image should do this but it doesn't work?
-RUN apt-get update -qq \
-  && apt-get install -qq \
-  python3 \
-  python3-dev \
-  curl \
-  make \
-  g++ \
-  # https://bugs.launchpad.net/ubuntu/+source/python3.6/+bug/1768644
-  dpkg-dev
-
-# node-gyp will fail to run unless node.js is installed
-RUN curl -sL https://deb.nodesource.com/setup_20.x  | /bin/bash -
-RUN apt-get -y install nodejs
+FROM python:3.11-bullseye
 
 WORKDIR /app
 
-COPY ./pyproject.toml ./poetry.lock ./
+COPY ./pyproject.toml ./poetry.lock poetry.toml ./
 COPY ./package.json bun.lockb ./
 
 COPY ./platform/ ./platform
 COPY ./services/ ./services
+COPY ./models/ ./models
 
-# RUN pip install --upgrade pip
-# RUN pip install 'poetry'
-# RUN poetry config virtualenvs.create false
-# RUN poetry install --no-dev --no-root
+RUN python -m pip install --user pipx
+RUN python -m pipx install poetry
+ENV PATH="${PATH}:/root/.local/bin/"
+RUN poetry install --only main --no-root
+
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="${PATH}:/root/.bun/bin/"
+
+# node-gyp will fail to run unless node.js is installed
+RUN curl -sL https://deb.nodesource.com/setup_20.x  | /bin/bash -
+RUN apt-get install nodejs
 
 RUN bun install
 
