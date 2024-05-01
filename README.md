@@ -121,7 +121,7 @@ docker build .  -t openfn-apollo
 To run it on port 3000
 
 ```bash
-docker run openfn-apollo -p 3000:3000
+docker run -p 3000:3000 openfn-apollo
 ```
 
 ## Contributing
