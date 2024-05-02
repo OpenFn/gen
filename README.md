@@ -1,7 +1,7 @@
 # Apollo Server
 
-Apollo is OpenFn's knowledge, AI and data platform, provided services to support
-the OpenFn toolchain.
+Apollo is OpenFn's knowledge, AI and data platform, providing services to
+support the OpenFn toolchain.
 
 Apollo is known as the God of (among other things) truth, prophecy and oracles.
 
@@ -20,7 +20,11 @@ installed:
 - poetry
 - bunjs
 
-TODO: You also need make and pythion dev for `node-calls-python-, right?
+You also need `python3-dev`, `g++` and `make` to be installted:
+
+```
+sudo apt install python3-dev make g++
+```
 
 ## Getting Started
 
@@ -29,26 +33,62 @@ To run the server locally, run:
 - `poetry install`
 - `bun install`
 
-To start the server, run:
+To start the server for local developement, run:
+
+```bash
+bun dev
+```
+
+Any changes to the typescript files will trigger the server to be re-loaded. All
+python scripts will be re-laoded on each call. So you should rarely, if ever,
+need to restart the server.
+
+To start in production mode, run:
 
 ```bash
 bun start
 ```
 
-To start in dev mode (with hot reloading on python scripts), run:
-
-```bash
-bun watch
-```
+In production mode, nothing will hot reload and python modules are cached.
 
 To see an index of the available language services, head to `localhost:3000`.
 
 ## CLI
 
-To communicate with and test the server, you can use `@openfn/cl`.
+To communicate with and test the server, you can use `@openfn/cli`.
 
-TODO: this needs implemnenting and this section needs to be filled out with
-usage examples.
+Use the `apollo` command with your service name and pass a json file:
+
+```
+openfn apollo echo tmp/payload.json
+```
+
+Pass `--staging`, `--production` or `--local` to call different deployments of
+apollo.
+
+To default to using your local server, you can set an env var:
+
+```
+export OPENFN_APOLLO_DEFAULT_ENV=local
+```
+
+Or pass an explicit URL if you're not running on the default port:
+
+```
+export OPENFN_APOLLO_DEFAULT_ENV=http://locahost:6666
+```
+
+Output will be shown in stdout by default. Pass `-o path/to/output/.json` to
+save the output to disk.
+
+You can get more help with:
+
+```
+openfn apollo help
+```
+
+Note that if a service returns `{ files: {} }` object in the payload, an you
+pass `-o` with a folder, those files will be written to disk .
 
 ## API Keys & Env vars
 

@@ -125,10 +125,9 @@ To add models as python packages:
 
 ## Code Style
 
-Code should be formated with black
+--TODO--
 
-I've removed the old pre-commit hook (the idea of changing code invisibly,
-before a commit, terrifes me utterly)
+Code should be formated with black
 
 I need to:
 

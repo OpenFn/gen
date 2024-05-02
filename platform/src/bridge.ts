@@ -1,13 +1,19 @@
 // node-python bridge
 import { $ } from "bun";
-import nodecallspython from "node-calls-python";
+import { interpreter as py } from "node-calls-python";
 import path from "node:path";
 
 // Use the major.minor python version to find the local poetry venv
 // see https://github.com/OpenFn/gen/issues/45
 const PYTHON_VERSION = "3.11";
 
-const py = nodecallspython.interpreter;
+const allowReimport = process.env.NODE_ENV !== "production";
+
+if (allowReimport) {
+  console.log(
+    "Running server in dev mode. Python scripts will be re-loaded on every call."
+  );
+}
 
 export const run = async (scriptName: string, args: JSON) => {
   try {
@@ -19,14 +25,16 @@ export const run = async (scriptName: string, args: JSON) => {
     );
     py.addImportPath(path.resolve("services"));
 
-    // In production, only import a module once
-    // But in dev, re-import every time
-    const cache = process.env.NODE_ENV !== "production";
+    if (allowReimport) {
+      // In production, only import a module once
+      // But in dev, re-import every time
+      py.reimport("/services/");
+    }
 
     // import from a top level entry point
     const pymodule = await py.import(
       path.resolve(`./services/entry.py`),
-      cache
+      allowReimport
     );
 
     const result = await py.call(pymodule, "main", [scriptName, args]);
