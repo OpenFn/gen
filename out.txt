@@ -1,0 +1,13 @@
+$ bun  --watch platform/src/index.ts
+$ bun  --watch platform/src/index.ts
+Running server in dev mode. Python scripts will be re-loaded on every call.
+Loading routes:
+ - mounted /services/adaptor_gen
+ - mounted /services/code_generator
+ - mounted /services/echo
+ - mounted /services/inference
+ - mounted /services/signature_generator
+Apollo Server listening on  3000
+done! {
+  a: 22,
+}

@@ -128,6 +128,24 @@ The JS engine calls out to a long-running python process using
 `node-calls-python`. Python modules are pretty free-form but must adhere to a
 minimal structure. See the Contribution Guide for details.
 
+## Websockets
+
+TODO these are just devnotes but I do want a mention here
+
+- trap all stdout and pipe through a websocket
+- i need some kind of test client
+
+I have something super basic set up. how do I want it to work?
+
+- client connects
+- client uploads data
+  - payload
+  - data
+- server sends back logs -log
+- server sends back finish
+
+ok what if the client send start with a payload
+
 ## Python Setup
 
 This repo uses `poetry` to manage dependencies.

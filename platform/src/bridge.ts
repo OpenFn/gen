@@ -37,6 +37,10 @@ export const run = async (scriptName: string, args: JSON) => {
       allowReimport
     );
 
+    // process.stdout.write = (m) => {
+    //   console.error(" >> ", m);
+    // };
+
     const result = await py.call(pymodule, "main", [scriptName, args]);
     return result;
   } catch (e) {
