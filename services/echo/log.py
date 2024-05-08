@@ -1,3 +1,3 @@
 def log(x):
-    print("Echoing request")
-    print(x)
+    print("[echo]: Echoing request")
+    print("[echo]: " + str(x))

@@ -14,7 +14,10 @@ class Payload:
     def __init__(self, dict):
         self.model = dict["model"]
         self.prompt = dict["prompt"]
-        self.args = DictObj(dict.get("args", {}))
+        if "args" in dict:
+            self.args = DictObj(dict.get("args", {}))
+        else:
+            self.args = DictObj({})
 
 
 # This is interface for calls from js-land (via http)
