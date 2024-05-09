@@ -1,5 +1,4 @@
-import logging
-from util import DictObj
+from util import DictObj, createLogger
 
 from .utils import (
     generate_code_prompt,
@@ -8,8 +7,7 @@ from .utils import (
 from inference import inference
 
 
-logging.basicConfig(level=logging.INFO, filename="out.txt")
-logger = logging.getLogger(__name__)
+logger = createLogger("code_generator")
 
 
 class Payload(DictObj):
@@ -21,9 +19,9 @@ class Payload(DictObj):
 # generate adaptor code based on a model and signature
 def main(dataDict) -> str:
     data = Payload(dataDict)
-
+    logger.generate("Running code generator with model {}".format(data.model))
     result = generate(data.model, data.signature, data.get("api_key"))
-
+    logger.generate("Code generation complete!")
     return result
 
 
