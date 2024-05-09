@@ -21,9 +21,13 @@ class DictObj:
 
 filename = None
 
+loggers = {}
+
 
 def setLogOutput(f):
     global filename
+
+    print("writing logs to {}".format(f))
 
     filename = f
 
@@ -35,11 +39,14 @@ def setLogOutput(f):
 def createLogger(name):
     # create a logger which writes to disk
     logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(name)
+    if not name in loggers:
+        logger = logging.getLogger(name)
 
-    # logger.addHandler(logging.StreamHandler(sys.stdout))
-    # this doesn't log with the file names etc
-    # but that's probably good, because the CLI doesn't need to know that stuff
-    # TODO only do this on first creation
-    logger.addHandler(logging.FileHandler(filename))
-    return logger
+        # logger.addHandler(logging.StreamHandler(sys.stdout))
+        # this doesn't log with the file names etc
+        # but that's probably good, because the CLI doesn't need to know that stuff
+        # TODO only do this on first creation
+        logger.addHandler(logging.FileHandler(filename))
+        loggers[name] = logger
+
+    return loggers[name]

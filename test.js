@@ -2,7 +2,6 @@ const socket = new WebSocket("ws://localhost:3000/services/echo");
 console.log("connecting");
 
 socket.addEventListener("message", ({ type, data }) => {
-  console.log(type);
   const evt = JSON.parse(data);
 
   if (evt.event === "complete") {

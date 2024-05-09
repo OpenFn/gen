@@ -28,16 +28,16 @@ export default async (app: Elysia) => {
       app.ws(name, {
         message(ws, message) {
           try {
-            ws.send({
-              event: "log",
-              data: "doing the thing", // log can be json or string? a logger JSONLog object?
-            });
             if (message.event === "start") {
-              ws.send({
-                event: "log",
-                data: "all done!",
-              });
-              run(name, message.data as any).then((result) => {
+              const onLog = (log: string) => {
+                console.log(" >> RETURNING LOG ", log);
+                ws.send({
+                  event: "log",
+                  data: log,
+                });
+              };
+
+              run(name, message.data as any, onLog).then((result) => {
                 console.log("done!", result);
                 ws.send({
                   event: "complete",

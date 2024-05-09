@@ -4,7 +4,8 @@ import { interpreter as py } from "node-calls-python";
 import path from "node:path";
 import readline from "node:readline";
 import fs from "node:fs";
-
+import { rm } from "node:fs/promises";
+import crypto from "node:crypto";
 import { spawn } from "node:child_process";
 
 // Use the major.minor python version to find the local poetry venv
@@ -19,7 +20,60 @@ if (allowReimport) {
   );
 }
 
-export const run = async (scriptName: string, args: JSON) => {
+/**
+ * This nasty little function sets up logfile and a watch
+ * to capture the srdout from the python process
+ * Python's logger is configured to write to this file,
+ * which will be watched and then re-directed
+ *
+ * TODO: I'd like this to just be a promise, it'll be a bit slicker,
+ * But I'm still sketching it out really
+ *
+ */
+const setupLogger = (onLog = (_l: string) => {}, onComplete = () => {}) => {
+  const id = crypto.randomUUID();
+
+  const logfile = path.resolve(`tmp/logs/${id}.log`);
+  Bun.write(logfile, "");
+  console.log("node reading logs from", logfile);
+
+  // attempt #1: use bun shell
+  // sadly bun shell doesn't support streams so I cant do this:
+  // $`tail -f ${logfile}`;
+
+  // attempt #2: use child process
+  // This is me trying not to spawn a process to run python. hmm.
+  const child = spawn("tail", ["-f", logfile]);
+  const rl = readline.createInterface({
+    input: child.stdout,
+    crlfDelay: Infinity,
+  });
+  rl.on("line", (line) => {
+    if (line === "***END***") {
+      destroy();
+      onComplete();
+    } else {
+      onLog(line);
+    }
+  });
+
+  // kill the child process and remove the log file
+  const destroy = async () => {
+    child.kill();
+
+    await rm(logfile);
+  };
+
+  return { logfile, destroy };
+};
+
+// TODO I need to make this blocking so that only one thing runs at once
+// OR I drop workerpool onto it
+export const run = async (
+  scriptName: string,
+  args: JSON,
+  onLog?: (str: string) => void
+) => {
   try {
     // poetry should be configured to use a vnv in the local filesystem
     // This makes it really easy to tell node-calls-python about the right env!
@@ -35,73 +89,32 @@ export const run = async (scriptName: string, args: JSON) => {
       py.reimport("/services/");
     }
 
-    const logfile = "dooby.txt";
-    // TODO clear the log file
+    return new Promise(async (resolve, reject) => {
+      let result: any;
 
-    // read the logs
-    // const logs = Bun.file("dooby.txt");
-    // const exists = await logs.exists();
-    // console.log("EXISTS", exists);
-    // const logStream = logs.stream();
-    // console.log(readline.createInterface);
+      const onComplete = () => {
+        resolve(result);
+      };
 
-    // the bun interface seems to not work?
-    // this will read the file once, get to eol, and return
-    // // how would I re-trigger on write?
-    // fs.watch("dooby.txt", (event) => {
-    //   console.log(" -- changed!");
-    //   console.log(event);
-    // });
+      const { logfile, destroy } = setupLogger(onLog, onComplete);
 
-    // new Promise(async () => {
-    //   for await (let line of $`tail -f ${logfile}`.lines()) {
-    //     console.log(" >> ", line);
-    //   }
-    // });
+      // import from a top level entry point
+      const pymodule = await py.import(
+        path.resolve(`./services/entry.py`),
+        allowReimport
+      );
 
-    // const fileStream = fs.createReadStream("dooby.txt");
-    // const rl = readline.createInterface({
-    //   input: fileStream,
-    //   crlfDelay: Infinity,
-    // });
-
-    // rl.on("line", (line) => {
-    //   console.log(`Line from file: ${line}`);
-    // });
-
-    // attempt 321: use bun shell
-    // sadly bun shell doesn't support streams so I cant do this:
-    // $`tail -f ${logfile}`;
-
-    // attempt 322: use child process
-    // This is me trying not to spawn a process to run python. hmm.
-    const { spawn } = require("child_process");
-    const child = spawn("tail", ["-f", logfile]);
-    // child.stdout.pipe(process.stdout);
-    const rl = readline.createInterface({
-      input: child.stdout,
-      crlfDelay: Infinity,
+      try {
+        result = await py.call(pymodule, "main", [scriptName, args, logfile]);
+      } catch (e) {
+        // Note that the error coming out will be a string with no stack trace :(
+        console.log(e);
+        destroy();
+        reject(e);
+      }
     });
-    rl.on("line", (line) => {
-      console.log(`Line from file: ${line}`);
-    });
-
-    // import from a top level entry point
-    const pymodule = await py.import(
-      path.resolve(`./services/entry.py`),
-      allowReimport
-    );
-
-    // process.stdout.write = (m) => {
-    //   console.error(" >> ", m);
-    // };
-
-    const result = await py.call(pymodule, "main", [scriptName, args]);
-
-    child.kill();
-    return result;
   } catch (e) {
-    // Note that the error coming out will be a string with no stack trace :(
+    // TODO I don't think we need this outer catch now
     console.log(e);
   }
 };

@@ -1,6 +1,7 @@
 import sys
 import json
 from dotenv import load_dotenv
+import logging
 from util import setLogOutput
 
 # from contextlib import redirect_stdout
@@ -25,17 +26,27 @@ load_dotenv()
 def main(args):
     service = args[0]
     json = args[1]
-    # output = args[2] # output, if passed
+    logfile = args[2]
 
     # set all logging to write to this file
     # if another module is called while this is running, they'll interfere
-    # which means we need a queuing system, a thread of python envs
-    # and we ensure they only run one at a time
-    setLogOutput("dooby.txt")
+    setLogOutput(logfile)
+
+    # create a special logger to flag when we're done
+    # We don't want to see this in stdout
+    logger = logging.getLogger("apollo")
+    logger.addHandler(logging.FileHandler(logfile))
 
     module_name = "{0}.{0}".format(service)
     m = __import__(module_name, fromlist=["main"])
-    return m.main(json)
+    result = m.main(json)
+
+    # Write the end message to the log
+    f = open(logfile, "a")
+    f.write("***END***\n")  # Note that this extra line break is important
+    f.close()
+
+    return result
 
 
 # when called from main, look for
