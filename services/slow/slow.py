@@ -1,13 +1,11 @@
-# relative imports work well!
-from .log import log
-
 from util import createLogger
 
-logger = createLogger("echo")
+logger = createLogger("slow")
 
 
 # Simple python service to echo requests back to the caller
 # Used in test
 def main(x):
-    log(x)
-    return x
+    for i in range(0):
+        logger.info("...{}".format(i))
+        sleep(200)

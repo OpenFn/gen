@@ -2,6 +2,10 @@
 import { $ } from "bun";
 import { interpreter as py } from "node-calls-python";
 import path from "node:path";
+import readline from "node:readline";
+import fs from "node:fs";
+
+import { spawn } from "node:child_process";
 
 // Use the major.minor python version to find the local poetry venv
 // see https://github.com/OpenFn/gen/issues/45
@@ -31,6 +35,57 @@ export const run = async (scriptName: string, args: JSON) => {
       py.reimport("/services/");
     }
 
+    const logfile = "dooby.txt";
+    // TODO clear the log file
+
+    // read the logs
+    // const logs = Bun.file("dooby.txt");
+    // const exists = await logs.exists();
+    // console.log("EXISTS", exists);
+    // const logStream = logs.stream();
+    // console.log(readline.createInterface);
+
+    // the bun interface seems to not work?
+    // this will read the file once, get to eol, and return
+    // // how would I re-trigger on write?
+    // fs.watch("dooby.txt", (event) => {
+    //   console.log(" -- changed!");
+    //   console.log(event);
+    // });
+
+    // new Promise(async () => {
+    //   for await (let line of $`tail -f ${logfile}`.lines()) {
+    //     console.log(" >> ", line);
+    //   }
+    // });
+
+    // const fileStream = fs.createReadStream("dooby.txt");
+    // const rl = readline.createInterface({
+    //   input: fileStream,
+    //   crlfDelay: Infinity,
+    // });
+
+    // rl.on("line", (line) => {
+    //   console.log(`Line from file: ${line}`);
+    // });
+
+    // attempt 321: use bun shell
+    // sadly bun shell doesn't support streams so I cant do this:
+    // $`tail -f ${logfile}`;
+
+    // attempt 322: use child process
+    // This is me trying not to spawn a process to run python. hmm.
+    const { spawn } = require("child_process");
+    const child = spawn("tail", ["-f", logfile]);
+    // child.stdout.pipe(process.stdout);
+    const rl = readline.createInterface({
+      input: child.stdout,
+      crlfDelay: Infinity,
+    });
+    rl.on("line", (line) => {
+      console.log(`Line from file: ${line}`);
+    });
+
     // import from a top level entry point
     const pymodule = await py.import(
       path.resolve(`./services/entry.py`),
@@ -42,6 +97,8 @@ export const run = async (scriptName: string, args: JSON) => {
     // };
 
     const result = await py.call(pymodule, "main", [scriptName, args]);
+
+    child.kill();
     return result;
   } catch (e) {
     // Note that the error coming out will be a string with no stack trace :(

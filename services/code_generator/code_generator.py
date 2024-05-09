@@ -8,7 +8,7 @@ from .utils import (
 from inference import inference
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename="out.txt")
 logger = logging.getLogger(__name__)
 
 
