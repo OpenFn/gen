@@ -2,7 +2,7 @@ name: Build and push Docker images
 
 on:
   push:
-    tags: "@openfn/ws-worker@**"
+    tags: "@openfn/ws-apollo@**"
 
 jobs:
   build-and-push-worker-image:
