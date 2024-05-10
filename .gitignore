@@ -2,9 +2,12 @@
 .vscode/
 
 # Poetry specific files and directories
-poetry.lock
 .poetry/
 __pypackages__/
+.venv
+
+# node.js stuff
+node_modules/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

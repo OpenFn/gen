@@ -1,140 +1,170 @@
-# Built-time AI Code Generation from API
+# Apollo Server
 
-This repository contains a Python application that utilizes AI models to generate code based on instructions received through an API URL. The application processes the instructions, runs the relevant AI models, and returns the generated code as a response.
+Apollo is OpenFn's knowledge, AI and data platform, providing services to
+support the OpenFn toolchain.
 
-## Project Architecture
+Apollo is known as the God of (among other things) truth, prophecy and oracles.
 
-The project architecture is designed as a two-tier system. The first tier (current repo) handles the request processing, interacts with the API, and triggers the AI models. The second tier hosts AI inference and utilises the received preprocessed data to execute an AI model inference. The architecture diagram below provides an overview of the system:
+This repo contains:
 
-![Architecture Diagram](./assets/system-architecture.png)
+- A bunjs-based webserver
+- A number of python-based AI services
+- (soon) A numberof Typescript-based data services
 
-## Running with Docker Compose
+## Requirements
 
-To run the application using Docker Compose, follow these steps:
+To run this server locally, you'll need the following dependencies to be
+installed:
 
-1. Navigate to the root directory of the project:
+- python 3.11 (yes, 3.11 exactly, see Python Setup)
+- poetry
+- bunjs
 
-   ```bash
-   cd /path/to/your/gen/repo
-   ```
+You also need `python3-dev`, `g++` and `make` to be installted:
 
-2. Build and start the services using Docker Compose:
-
-   ```bash
-   docker-compose up --build
-   ```
-
-   The `--build` option ensures that Docker Compose builds the images before starting the services if non existent
-
-3. The services should now be running, and you can access them using the specified ports:
-
-   - Signature Generator: [http://localhost:8001](http://localhost:8001)
-   - Code Generator: [http://localhost:8002](http://localhost:8002)
-   - Inference: [http://localhost:8003](http://localhost:8003)
-
-4. To stop the services, press `Ctrl+C` in the terminal where Docker Compose is running.
-
-**Note:** No docker image is stored at the time of writing and have to be built locally as shown above.
-
-**Note:** Ensure that you have Docker and Docker Compose installed on your machine.
-
-For more detailed instructions or troubleshooting, refer to the Docker documentation: [Get Docker](https://docs.docker.com/get-docker/) and [Install Docker Compose](https://docs.docker.com/compose/install/).
-
-
-## Installation
-
-To set up the project and ensure proper functionality, follow these steps:
-
-1. Clone the repository to your local machine:
-
-   ```bash
-   git clone https://github.com/OpenFn/gen.git
-   ```
-
-2. Copy the example env and set your API keys as required:
-
-   ```bash
-   cp ./services/inference/.env.example ./services/inference/.env
-   ```
-
-3. Navigate to the desired module's directory:
-
-   ```bash
-   cd services/<module>
-   ```
-
-4. Install the required dependencies using Poetry:
-
-   ```bash
-   poetry install
-   ```
-
-Repeat these steps for each module under the `services` directory that you want to use.
-
-## Usage
-
-## Starting Services
-
-You can initiate each service using the following steps:
-
-1. Navigate to the desired service module:
-
-   ```bash
-   cd services/<module>
-   ```
-
-2. Run the service using Poetry:
-
-   ```bash
-   poetry run ./run.sh
-   ```
-
-Additionally, each module includes a `demo.py` file that can be executed. To run the entire flow:
-
-1. Navigate to the `services` directory:
-
-   ```bash
-   cd services/<module>
-   ```
-
-2. Run the demo:
-
-   ```bash
-   poetry run python demo.py
-   ```
-## Demo
-
-To execute the entire generation process for the provided samples, run the following command:
-
-```bash
-cd services/
-python3 demo.py
+```
+sudo apt install python3-dev make g++
 ```
 
-This prepares the data, performs requests and saves the outputs (Adaptor.d.ts, Adapter.js, and Adapter.test.js).
+## Getting Started
 
-## Project Structure
+To run the server locally, run:
 
-The project structure is organized as follows:
+- `poetry install`
+- `bun install`
 
-- `services/`: Contains the three services and demo file.
-- `utils/`: Directory containing utility functions and helper modules for processing instructions and generating code.
-- `tests/`: Directory containing test files for the application.
+To start the server for local developement, run:
 
-## API Documentation
+```bash
+bun dev
+```
 
-The service APIs are documented using OpenAPI (FastAPI). You can view the API documentation for each running service by navigating to the `/docs` endpoint. Here are the URLs for each service:
+Any changes to the typescript files will trigger the server to be re-loaded. All
+python scripts will be re-laoded on each call. So you should rarely, if ever,
+need to restart the server.
 
-- **Signature Generator Service:** [http://localhost:8001/docs](http://localhost:8001/docs)
-- **Code Generator Service:** [http://localhost:8002/docs](http://localhost:8002/docs)
-- **Inference Service:** [http://localhost:8003/docs](http://localhost:8003/docs)
+To start in production mode, run:
 
-Simply access the respective URL to explore and interact with the API documentation. Replace the endpoints with the actual service endpoints.
+```bash
+bun start
+```
+
+In production mode, nothing will hot reload and python modules are cached.
+
+To see an index of the available language services, head to `localhost:3000`.
+
+## CLI
+
+To communicate with and test the server, you can use `@openfn/cli`.
+
+Use the `apollo` command with your service name and pass a json file:
+
+```
+openfn apollo echo tmp/payload.json
+```
+
+Pass `--staging`, `--production` or `--local` to call different deployments of
+apollo.
+
+To default to using your local server, you can set an env var:
+
+```
+export OPENFN_APOLLO_DEFAULT_ENV=local
+```
+
+Or pass an explicit URL if you're not running on the default port:
+
+```
+export OPENFN_APOLLO_DEFAULT_ENV=http://locahost:6666
+```
+
+Output will be shown in stdout by default. Pass `-o path/to/output/.json` to
+save the output to disk.
+
+You can get more help with:
+
+```
+openfn apollo help
+```
+
+Note that if a service returns `{ files: {} }` object in the payload, an you
+pass `-o` with a folder, those files will be written to disk .
+
+## API Keys & Env vars
+
+Some services require API keys.
+
+Rather than coding these into your JSON payloads directly, keys can be loaded
+from the `.env` file at the root.
+
+Also note that `tmp` dirs are untracked, so if you do want to store credentials
+in your json, keep in inside a tmp dir and it'll remain safe and secret.
+
+## Server Architecture
+
+The Apollo server uses bunjs with the Elysia framework.
+
+It is a very lightweight server, with at the time of writing no authentication
+or governance included.
+
+Python services are hosted at `/services/<name>`. Each services expects a POST
+request with a JSON body, and will return JSON.
+
+There is very little standard for formality in the JSON structures to date. The
+server may soon establish some conventions for better interopability with the
+CLI.
+
+The JS engine calls out to a long-running python process using
+`node-calls-python`. Python modules are pretty free-form but must adhere to a
+minimal structure. See the Contribution Guide for details.
+
+## Python Setup
+
+This repo uses `poetry` to manage dependencies.
+
+We use an "in-project" venv , which means a `.venv` folder will be created when
+you run `poetry install`.
+
+We call out to a live python environment from node, using a library called
+`node-calls-python`. We pass in the path to the local `.venv` folder so that the
+node-python bindings can see your poetry environment.
+
+The `node-calls-python` setup currently relies on a hard-coded python version.
+If the python version is changed, this value will need updating.
+
+All python is invoked through `entry.py`, which loads the environment properly
+so that relative imports work.
+
+You can invoke entry.py directly (ie, without HTTP) through bun from the root:
+
+```
+bun py echo tmp/payload.json
+```
+
+## Installation Troubleshooting
+
+- Ensure all dependencies are installed
+- Ensure you've run `bun install` (unusual for Bun)
+- Maybe install node-gyp explicitly?
+- Ensure that `node-calls-python` has been built. In
+  `node_modules/node-calls-python` there should be a `Relesae` folder with stuff
+  inside.
+
+## Docker
+
+To build the docker image:
+
+```bash
+docker build .  -t openfn-apollo
+```
+
+To run it on port 3000
+
+```bash
+docker run -p 3000:3000 openfn-apollo
+```
 
 ## Contributing
 
-Contributions to this project are welcome. Feel free to open issues or submit pull requests for improvements, bug fixes, or new features.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+See the Contribution Guide for more details about how and where to contribute to
+the Apollo platform.
