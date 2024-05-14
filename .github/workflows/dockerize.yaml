@@ -38,7 +38,6 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          target: apollo
           tags: |
             openfn/apollo:latest
             openfn/apollo:v${{ env.DOCKER_TAG }}
