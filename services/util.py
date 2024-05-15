@@ -27,7 +27,8 @@ loggers = {}
 def setLogOutput(f):
     global filename
 
-    print("[entry.py] writing logs to {}".format(f))
+    if f is not None:
+        print("[entry.py] writing logs to {}".format(f))
 
     filename = f
 
@@ -42,11 +43,13 @@ def createLogger(name):
     if not name in loggers:
         logger = logging.getLogger(name)
 
+        loggers[name] = logger
+
         # logger.addHandler(logging.StreamHandler(sys.stdout))
         # this doesn't log with the file names etc
         # but that's probably good, because the CLI doesn't need to know that stuff
         # TODO only do this on first creation
-        logger.addHandler(logging.FileHandler(filename))
-        loggers[name] = logger
+        if filename is not None:
+            logger.addHandler(logging.FileHandler(filename))
 
     return loggers[name]

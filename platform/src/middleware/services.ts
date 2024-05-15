@@ -19,6 +19,8 @@ export default async (app: Elysia) => {
         const payload = ctx.body;
         const result = await run(name, payload as any);
 
+        console.log("DONE");
+
         // elysia will also stringify and set the headers if I return json
         return result;
       });

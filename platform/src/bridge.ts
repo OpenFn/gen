@@ -42,11 +42,17 @@ export const run = async (
     return new Promise(async (resolve, reject) => {
       let result: any;
 
+      let logfile = null;
+      let delimiter = ".";
+      let destroy = () => {};
+
       const onComplete = () => {
         resolve(result);
       };
 
-      const { logfile, delimiter, destroy } = setupLogger(onLog, onComplete);
+      if (onLog) {
+        ({ logfile, delimiter, destroy } = setupLogger(onLog, onComplete));
+      }
 
       // import from a top level entry point
       const pymodule = await py.import(
@@ -61,6 +67,10 @@ export const run = async (
           logfile,
           delimiter,
         ]);
+
+        if (!onLog) {
+          onComplete();
+        }
       } catch (e) {
         // Note that the error coming out will be a string with no stack trace :(
         console.log(e);

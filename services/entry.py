@@ -29,12 +29,14 @@ def main(args):
     logfile = args[2]
     delimiter = args[3]
 
+    # always set the logfile (even and indeed especially if it is none)
+    setLogOutput(logfile)
+
     # create a special logger to flag when we're done
     # We don't want to see this in stdout
-    if logfile:
+    if logfile is not None:
         # set all logging to write to this file
         # if another module is called while this is running, they'll interfere
-        setLogOutput(logfile)
 
         logger = logging.getLogger("apollo")
         logger.addHandler(logging.FileHandler(logfile))
@@ -44,7 +46,7 @@ def main(args):
     result = m.main(json)
 
     # Write the end message to the log
-    if logfile:
+    if logfile is not None:
         f = open(logfile, "a")
         f.write("{}\n".format(delimiter))
         f.close()
