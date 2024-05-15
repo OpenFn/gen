@@ -1,5 +1,6 @@
 from util import createLogger
 
+# TODO - in long running python, this needs to be re-intialised every time
 logger = createLogger("echo2")
 
 

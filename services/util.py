@@ -38,6 +38,7 @@ def setLogOutput(f):
 # I suppose it depends on the entry, someone needs to pass a flag
 # to setup the file
 def createLogger(name):
+    print("CREATE LOGGER  {}".format(name))
     # create a logger which writes to disk
     logging.basicConfig(level=logging.INFO)
     if not name in loggers:
@@ -45,11 +46,9 @@ def createLogger(name):
 
         loggers[name] = logger
 
-        # logger.addHandler(logging.StreamHandler(sys.stdout))
-        # this doesn't log with the file names etc
-        # but that's probably good, because the CLI doesn't need to know that stuff
-        # TODO only do this on first creation
         if filename is not None:
             logger.addHandler(logging.FileHandler(filename))
+    else:
+        print("RETURNING CACHED LOGGER")
 
     return loggers[name]
