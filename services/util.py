@@ -27,7 +27,7 @@ loggers = {}
 def setLogOutput(f):
     global filename
 
-    print("writing logs to {}".format(f))
+    print("[entry.py] writing logs to {}".format(f))
 
     filename = f
 

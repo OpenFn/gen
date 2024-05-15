@@ -27,24 +27,27 @@ def main(args):
     service = args[0]
     json = args[1]
     logfile = args[2]
-
-    # set all logging to write to this file
-    # if another module is called while this is running, they'll interfere
-    setLogOutput(logfile)
+    delimiter = args[3]
 
     # create a special logger to flag when we're done
     # We don't want to see this in stdout
-    logger = logging.getLogger("apollo")
-    logger.addHandler(logging.FileHandler(logfile))
+    if logfile:
+        # set all logging to write to this file
+        # if another module is called while this is running, they'll interfere
+        setLogOutput(logfile)
+
+        logger = logging.getLogger("apollo")
+        logger.addHandler(logging.FileHandler(logfile))
 
     module_name = "{0}.{0}".format(service)
     m = __import__(module_name, fromlist=["main"])
     result = m.main(json)
 
     # Write the end message to the log
-    f = open(logfile, "a")
-    f.write("***END***\n")  # Note that this extra line break is important
-    f.close()
+    if logfile:
+        f = open(logfile, "a")
+        f.write("{}\n".format(delimiter))
+        f.close()
 
     return result
 

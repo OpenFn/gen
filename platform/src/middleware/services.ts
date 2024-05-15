@@ -14,6 +14,7 @@ export default async (app: Elysia) => {
 
       // simple post
       app.post(name, async (ctx) => {
+        console.log(` >> POST to /services/${name}`);
         // Note that elysia handles json parsing for me - neat!
         const payload = ctx.body;
         const result = await run(name, payload as any);
@@ -26,11 +27,13 @@ export default async (app: Elysia) => {
       // TODO in the web socket API, does it make more sense to open a socket at root
       // and then pick the service you want? So you'd connect to /ws an send { call: 'echo', payload: {} }
       app.ws(name, {
+        open() {
+          console.log(` >> CONNECT at /services/${name}`);
+        },
         message(ws, message) {
           try {
             if (message.event === "start") {
               const onLog = (log: string) => {
-                console.log(" >> RETURNING LOG ", log);
                 ws.send({
                   event: "log",
                   data: log,
@@ -38,7 +41,6 @@ export default async (app: Elysia) => {
               };
 
               run(name, message.data as any, onLog).then((result) => {
-                console.log("done!", result);
                 ws.send({
                   event: "complete",
                   data: result,
