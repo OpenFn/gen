@@ -53,6 +53,16 @@ In production mode, nothing will hot reload and python modules are cached.
 
 To see an index of the available language services, head to `localhost:3000`.
 
+## Finetuning and dependency groups
+
+`poetry install` will only install the main dependencies - the stuff used in the
+docker image.
+
+Dependencies for finetuning (which include huge models) are in a special
+optional `ft` group in the `pyproject.toml`.
+
+To install these, do `poetry install --with ft`
+
 ## CLI
 
 To communicate with and test the server, you can use `@openfn/cli`.
