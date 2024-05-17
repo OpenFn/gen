@@ -77,48 +77,5 @@ export const run = async (
       onLog?.(line);
     });
 
-    // const text = await new Response(proc.stdout).text();
-    // console.log(text); // => "1.1.7"
-
     return;
-
-    // create a worker instance
-    const workerURL = new URL("worker.ts", import.meta.url).href;
-
-    // reduced memory footprint. idk if this is wise?
-    // https://bun.sh/docs/api/workers#memory-usage-with-smol
-    // @ts-ignore
-    //const worker = new Worker(workerURL, { smol: true});
-
-    // we get a memory segmentation fault error on the second call
-    // i think that's node-calls-python, it basically doesn't support two threads
-    const worker = new Worker(workerURL);
-    console.log("Creating worker ", worker.threadId);
-    worker.unref();
-
-    worker.addEventListener("open", () => {
-      console.log("worker is ready");
-      worker.postMessage({
-        name: "run",
-        script: scriptName,
-        args: args,
-        streamLogs: Boolean(onLog),
-      });
-    });
-    worker.addEventListener("close", (event) => {
-      console.log(`worker ${worker.threadId} is being closed`);
-    });
-
-    worker.addEventListener("message", ({ data }) => {
-      if (data.name === "error") {
-        worker.terminate();
-        reject(data.error);
-      } else if (data.name === "complete") {
-        worker.terminate();
-        resolve(data.result);
-      } else if (data.name === "log") {
-        onLog?.(data.message);
-      }
-    });
-  });
 };
