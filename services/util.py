@@ -38,7 +38,7 @@ def setLogOutput(f):
 # I suppose it depends on the entry, someone needs to pass a flag
 # to setup the file
 def createLogger(name):
-    print("CREATE LOGGER  {}".format(name))
+    # print("CREATE LOGGER  {}".format(name))
     # create a logger which writes to disk
     logging.basicConfig(level=logging.INFO)
     if not name in loggers:
@@ -46,8 +46,8 @@ def createLogger(name):
 
         loggers[name] = logger
 
-        if filename is not None:
-            logger.addHandler(logging.FileHandler(filename))
+        # if filename is not None:
+        #     logger.addHandler(logging.FileHandler(filename))
     else:
         print("RETURNING CACHED LOGGER")
 

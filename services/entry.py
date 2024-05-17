@@ -25,39 +25,46 @@ load_dotenv()
 # args is a list of the form (serviceName, args)
 def main(args):
     service = args[0]
-    json = args[1]
-    logfile = args[2]
-    delimiter = args[3]
+    data = args[1]
+    output = args[2]
+    # logfile = args[2]
+    # delimiter = args[3]
 
     # always set the logfile (even and indeed especially if it is none)
-    setLogOutput(logfile)
+    # setLogOutput(logfile)
 
-    # create a special logger to flag when we're done
-    # We don't want to see this in stdout
-    if logfile is not None:
-        # set all logging to write to this file
-        # if another module is called while this is running, they'll interfere
+    # # create a special logger to flag when we're done
+    # # We don't want to see this in stdout
+    # if logfile is not None:
+    #     # set all logging to write to this file
+    #     # if another module is called while this is running, they'll interfere
 
-        logger = logging.getLogger("apollo")
-        logger.addHandler(logging.FileHandler(logfile))
+    #     logger = logging.getLogger("apollo")
+    #     logger.addHandler(logging.FileHandler(logfile))
 
     module_name = "{0}.{0}".format(service)
     m = __import__(module_name, fromlist=["main"])
-    result = m.main(json)
+    result = m.main(data)
 
-    # Write the end message to the log
-    if logfile is not None:
-        f = open(logfile, "a")
-        f.write("{}\n".format(delimiter))
-        f.close()
+    # Write the result to to disk
+    # print(" python writing to {}".format(output))
+
+    f = open(output, "w")
+    f.write(json.dumps(result))
+    f.close()
+
+    # # Write the end message to the log
+    # if logfile is not None:
+    #     f = open(logfile, "a")
+    #     f.write("{}\n".format(delimiter))
+    #     f.close()
 
     return result
 
 
-# when called from main, look for
-# a) a service name
-# b) a path to input
-# Then call the module via main()
+# Alternate name - this takes json directly through stdin
+# is there a limit to how much data i can pipe in like this?
+# feels kinda nasty
 if __name__ == "__main__":
     mod_name = sys.argv[1]
     data = None
@@ -65,12 +72,36 @@ if __name__ == "__main__":
     print("Calling services/{} ...".format(mod_name))
 
     if len(sys.argv) >= 2:
-        json_path = sys.argv[2]
-        data = json.load(open(json_path))
+        data = json.loads(sys.argv[2])
+        # json_path = sys.argv[2]
+        # data = json.load(open(json_path))
         print(" loaded input JSON OK!")
 
+    output = sys.argv[3]
     print()
-    result = main([mod_name, data])
+    result = main([mod_name, data, output, None])
     print()
     print("Done!")
     print(result)
+
+
+# # when called from main, look for
+# # a) a service name
+# # b) a path to input
+# # Then call the module via main()
+# if __name__ == "__main__":
+#     mod_name = sys.argv[1]
+#     data = None
+
+#     print("Calling services/{} ...".format(mod_name))
+
+#     if len(sys.argv) >= 2:
+#         json_path = sys.argv[2]
+#         data = json.load(open(json_path))
+#         print(" loaded input JSON OK!")
+
+#     print()
+#     result = main([mod_name, data])
+#     print()
+#     print("Done!")
+#     print(result)
