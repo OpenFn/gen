@@ -1,96 +1,58 @@
-// node-python bridge
-import { $ } from "bun";
-import { interpreter as py } from "node-calls-python";
-import path from "node:path";
+// Run a python script
+// Each script will be run in its own thread because
+// 1) It saves scritp writers having to worry about long writing process
+// 2) Removes any risk of stale credentials and ensures a pristine environment
+// 3) it makes capturing logs a bit easier
+// Difficulty: at the time of writing node-calls-python blows up
 
-import setupLogger from "./util/streaming-logs";
-
-// Use the major.minor python version to find the local poetry venv
-// see https://github.com/OpenFn/gen/issues/45
-const PYTHON_VERSION = "3.11";
-
-const allowReimport = process.env.NODE_ENV !== "production";
-
-if (allowReimport) {
-  console.log(
-    "Running server in dev mode. Python scripts will be re-loaded on every call."
-  );
-}
-
-// TODO I need to make this blocking so that only one thing runs at once
-// OR I drop workerpool onto it
+/*
+ * Another approach to this would be to run a child process for python
+ * pipe the stdout (which I think I can do)
+ * and write the final result to a file to read back in
+ */
 export const run = async (
   scriptName: string,
   args: JSON,
   onLog?: (str: string) => void
 ) => {
-  try {
-    // poetry should be configured to use a venv in the local filesystem
-    // This makes it really easy to tell node-calls-python about the right env!
-    // IMPORTANT: if the python version changes, this path needs to be manually updated!
-    py.addImportPath(
-      path.resolve(`.venv/lib/python${PYTHON_VERSION}/site-packages`)
-    );
-    py.addImportPath(path.resolve("services"));
+  return new Promise((resolve, reject) => {
+    // create a worker instance
+    const workerURL = new URL("worker.ts", import.meta.url).href;
 
-    if (allowReimport) {
-      // In production, only import a module once
-      // But in dev, re-import every time
-      py.reimport("/services/");
-    }
+    // reduced memory footprint. idk if this is wise?
+    // https://bun.sh/docs/api/workers#memory-usage-with-smol
+    // @ts-ignore
+    //const worker = new Worker(workerURL, { smol: true});
 
-    return new Promise(async (resolve, reject) => {
-      let result: any;
+    // we get a memory segmentation fault error on the second call
+    // i think that's node-calls-python, it basically doesn't support two threads
+    const worker = new Worker(workerURL);
+    console.log("Creating worker ", worker.threadId);
+    worker.unref();
 
-      let logfile = null;
-      let delimiter = ".";
-      let destroy = () => {};
+    worker.addEventListener("open", () => {
+      console.log("worker is ready");
+      worker.postMessage({
+        name: "run",
+        script: scriptName,
+        args: args,
+        streamLogs: Boolean(onLog),
+      });
+    });
+    worker.addEventListener("close", (event) => {
+      console.log(`worker ${worker.threadId} is being closed`);
+    });
 
-      const onComplete = () => {
-        resolve(result);
-      };
-
-      if (onLog) {
-        ({ logfile, delimiter, destroy } = setupLogger(onLog, onComplete));
-      }
-
-      // import from a top level entry point
-      const pymodule = await py.import(
-        path.resolve(`./services/entry.py`),
-        allowReimport
-      );
-
-      try {
-        result = await py.call(pymodule, "main", [
-          scriptName,
-          args,
-          logfile,
-          delimiter,
-        ]);
-
-        if (!onLog) {
-          onComplete();
-        }
-      } catch (e) {
-        // Note that the error coming out will be a string with no stack trace :(
-        console.log(e);
-        destroy();
-        reject(e);
+    worker.addEventListener("message", ({ data }) => {
+      if (data.name === "error") {
+        worker.terminate();
+        reject(data.error);
+      } else if (data.name === "complete") {
+        worker.terminate();
+        resolve(data.result);
+      } else if (data.name === "log") {
+        onLog?.(data.message);
       }
     });
-  } catch (e) {
-    // TODO I don't think we need this outer catch now
-    console.log(e);
-  }
-};
-
-// Try to dynamically lookup the python version
-// This is super unreliable - we're actually better
-// off witha hard-coded value
-const lookupPythonVersion = async () => {
-  // TOOD what is the python executable?
-  // Is this even what poetry is using?
-  const version = await $`python3 --version`.text(); // absolutely sick, unbelievable
-  // this is too hard - is there a better way to do it?
-  return version.replace("Python ", "").split(".").slice(0, 2).join(".");
+  });
 };
