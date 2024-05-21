@@ -33,21 +33,17 @@ def setLogOutput(f):
     filename = f
 
 
-# get a logger which writes to a file
-# but also to stdout please!
-# I suppose it depends on the entry, someone needs to pass a flag
-# to setup the file
 def createLogger(name):
-    # print("CREATE LOGGER  {}".format(name))
-    # create a logger which writes to disk
-    logging.basicConfig(level=logging.INFO)
+    print("CREATE LOGGER  {}".format(name))
+
+    # hmm. If I use a stream other than stdout,
+    # I could send logger statements elsewhere
+    # but I wouldn't be able to read it from the outside
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     if not name in loggers:
         logger = logging.getLogger(name)
 
         loggers[name] = logger
-
-        # if filename is not None:
-        #     logger.addHandler(logging.FileHandler(filename))
     else:
         print("RETURNING CACHED LOGGER")
 

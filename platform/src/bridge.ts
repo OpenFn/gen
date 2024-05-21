@@ -67,16 +67,19 @@ export const run = async (
       // else ?
     });
 
-    const rl = readline.createInterface({
-      input: proc.stdout,
-      crlfDelay: Infinity,
-    });
-    rl.on("line", (line) => {
-      // TODO this should be marked up locally so we can see where the log came from
-      // shouldn't python be doing that? given logger names? I don't see it here
-      console.log(line);
-      onLog?.(line);
-    });
+    if (onLog) {
+      const rl = readline.createInterface({
+        input: proc.stdout,
+        crlfDelay: Infinity,
+      });
+      rl.on("line", (line) => {
+        // TODO right now this gets ALL logs, including the root logger
+        // We should consider:
+        // a) update the root logger in python to redirect elsewhere
+        // b) only forwarding info+ level logs to the socket
+        onLog(line);
+      });
+    }
 
     return;
   });
