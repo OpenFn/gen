@@ -1,6 +1,7 @@
 import readline from "node:readline";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { rm } from "node:fs/promises";
 
 /**
   Run a python script
@@ -14,7 +15,7 @@ export const run = async (
   args: JSON,
   onLog?: (str: string) => void
 ) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<JSON | null>(async (resolve, reject) => {
     const id = crypto.randomUUID();
 
     const tmpfile = path.resolve(`tmp/data/${id}-{}.json`);
@@ -61,10 +62,21 @@ export const run = async (
     proc.on("close", async () => {
       const result = Bun.file(outputPath);
       const text = await result.text();
+
+      try {
+        await rm(inputPath);
+        await rm(outputPath);
+      } catch (e) {
+        console.error("Error removinbg temporary files");
+        console.error(e);
+      }
+
       if (text) {
         resolve(JSON.parse(text));
+      } else {
+        console.warn("NO data returned from pythonland");
+        resolve(null);
       }
-      // else ?
     });
 
     if (onLog) {
