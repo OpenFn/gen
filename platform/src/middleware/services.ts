@@ -14,7 +14,7 @@ export default async (app: Elysia) => {
 
       // simple post
       app.post(name, async (ctx) => {
-        console.log(` >> POST to /services/${name}`);
+        console.log(`POST to /services/${name}`);
         // Note that elysia handles json parsing for me - neat!
         const payload = ctx.body;
         const result = await run(name, payload as any);
@@ -28,7 +28,7 @@ export default async (app: Elysia) => {
       // and then pick the service you want? So you'd connect to /ws an send { call: 'echo', payload: {} }
       app.ws(name, {
         open() {
-          console.log(` >> CONNECT at /services/${name}`);
+          console.log(`Websocket connected  at /services/${name}`);
         },
         message(ws, message) {
           try {
