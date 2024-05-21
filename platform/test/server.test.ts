@@ -32,6 +32,8 @@ describe("Main server", () => {
 
     expect(status).toBe(200);
   });
+
+  // send messages through a web socket
 });
 
 // It won't be appropriate at all to unit test many of these
@@ -51,6 +53,34 @@ describe("Python Services", () => {
 
       const text = await response.json();
       expect(text).toEqual(json);
+    });
+
+    // echo through web socket with result and log
+    it("returns through a websocket", async () => {
+      return new Promise<void>((done) => {
+        const payload = { a: 22 };
+
+        // TODO maybe create a helper to manage client ocnnections
+        const socket = new WebSocket(`ws://localhost:${port}/services/echo`);
+
+        socket.addEventListener("message", ({ type, data }) => {
+          const evt = JSON.parse(data);
+
+          if (evt.event === "complete") {
+            expect(evt.data).toEqual(payload);
+            done();
+          }
+        });
+
+        socket.addEventListener("open", (event) => {
+          socket.send(
+            JSON.stringify({
+              event: "start",
+              data: payload,
+            })
+          );
+        });
+      });
     });
   });
 });

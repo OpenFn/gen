@@ -1,12 +1,11 @@
-import logging
-
 from .models.gpt3_turbo import generate as gpt3_turbo
 from .models.codet5 import generate as codet5
 from .models.gpt_ft import generate as gpt_ft
 from util import DictObj
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from util import createLogger
+
+logger = createLogger("inference.prompts")
 
 
 # all http calls to inference need a model and prompt, and optionally an args dict
