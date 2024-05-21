@@ -149,6 +149,9 @@ is a JSON payload in the `data` key.
 `log`: send by the server whenever a `print()` line is logged by the python
 process.
 
+Note that `print()` statements do not get send out to the web socket, as these
+are intended for local debugging. Only logs from a logger object are diverted.
+
 ## Python Setup
 
 This repo uses `poetry` to manage dependencies.

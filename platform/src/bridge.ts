@@ -73,11 +73,12 @@ export const run = async (
         crlfDelay: Infinity,
       });
       rl.on("line", (line) => {
-        // TODO right now this gets ALL logs, including the root logger
-        // We should consider:
-        // a) update the root logger in python to redirect elsewhere
-        // b) only forwarding info+ level logs to the socket
-        onLog(line);
+        // Divert any loggs from a logger object to the websocket
+        if (/^(INFO|DEBUG|ERROR|WARN)\:/.test(line)) {
+          // TODO I'd love to break the log line up in to JSON actually
+          // { source, level, message }
+          onLog(line);
+        }
       });
     }
 
