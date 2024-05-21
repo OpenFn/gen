@@ -50,16 +50,21 @@ export const run = async (
 
     // Use nodejs spawn
     // I seem to have to use this because the bun stream doesn't work with readline
-    const proc = spawn("poetry", [
-      "run",
-      "python",
-      "services/entry.py",
-      scriptName,
-      inputPath,
-      outputPath,
-    ]);
+    const proc = spawn(
+      "poetry",
+      ["run", "python", "services/entry.py", scriptName, inputPath, outputPath],
+      {}
+    );
 
-    proc.on("close", async () => {
+    proc.on("error", async (err) => {
+      console.log(err);
+    });
+
+    proc.on("close", async (code) => {
+      if (code) {
+        console.error("Python process exited with code", code);
+        reject(code);
+      }
       const result = Bun.file(outputPath);
       const text = await result.text();
 
@@ -67,32 +72,43 @@ export const run = async (
         await rm(inputPath);
         await rm(outputPath);
       } catch (e) {
-        console.error("Error removinbg temporary files");
+        console.error("Error removing temporary files");
         console.error(e);
       }
 
       if (text) {
         resolve(JSON.parse(text));
       } else {
-        console.warn("NO data returned from pythonland");
+        console.warn("No data returned from pythonland");
         resolve(null);
       }
     });
 
-    if (onLog) {
-      const rl = readline.createInterface({
-        input: proc.stdout,
-        crlfDelay: Infinity,
-      });
-      rl.on("line", (line) => {
-        // Divert any loggs from a logger object to the websocket
-        if (/^(INFO|DEBUG|ERROR|WARN)\:/.test(line)) {
-          // TODO I'd love to break the log line up in to JSON actually
-          // { source, level, message }
-          onLog(line);
-        }
-      });
-    }
+    const rl = readline.createInterface({
+      input: proc.stdout,
+      crlfDelay: Infinity,
+    });
+    rl.on("line", (line) => {
+      // First divert the log line locally
+      console.log(line);
+
+      // Then divert any logs from a logger object to the websocket
+      if (/^(INFO|DEBUG|ERROR|WARN)\:/.test(line)) {
+        // TODO I'd love to break the log line up in to JSON actually
+        // { source, level, message }
+        onLog?.(line);
+      }
+    });
+
+    const rl2 = readline.createInterface({
+      input: proc.stderr,
+      crlfDelay: Infinity,
+    });
+    rl2.on("line", (line) => {
+      console.error(line);
+      // /Divert all errors to the websocket
+      onLog?.(line);
+    });
 
     return;
   });
