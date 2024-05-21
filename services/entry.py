@@ -1,21 +1,10 @@
 import sys
 import json
 from dotenv import load_dotenv
-import logging
-from util import setLogOutput
-
-# from contextlib import redirect_stdout
+import uuid
 
 # This will load from the ../.env file (at root)
 load_dotenv()
-
-
-# with open("out.txt", "w") as f:
-#     with redirect_stdout(f):
-#         print("it now prints to `out.text`")
-# overwrite stdout and redirect to disk
-# with open('file', 'w') as sys.stdout:
-#     print('test')
 
 
 # This module is a sort of "router"
@@ -23,85 +12,42 @@ load_dotenv()
 # it will import it dynamically and invoke the main
 # function with the second argument
 # args is a list of the form (serviceName, args)
-def main(args):
-    service = args[0]
-    data = args[1]
-    output = args[2]
-    # logfile = args[2]
-    # delimiter = args[3]
-
-    # always set the logfile (even and indeed especially if it is none)
-    # setLogOutput(logfile)
-
-    # # create a special logger to flag when we're done
-    # # We don't want to see this in stdout
-    # if logfile is not None:
-    #     # set all logging to write to this file
-    #     # if another module is called while this is running, they'll interfere
-
-    #     logger = logging.getLogger("apollo")
-    #     logger.addHandler(logging.FileHandler(logfile))
-
+def call(service, input_path, output_path):
     module_name = "{0}.{0}".format(service)
+
+    f = open(input_path, "r")
+    data = json.load(f)
+    f.close()
+
     m = __import__(module_name, fromlist=["main"])
     result = m.main(data)
 
-    # Write the result to to disk
-    # print(" python writing to {}".format(output))
-
-    f = open(output, "w")
+    f = open(output_path, "w")
     f.write(json.dumps(result))
     f.close()
-
-    # # Write the end message to the log
-    # if logfile is not None:
-    #     f = open(logfile, "a")
-    #     f.write("{}\n".format(delimiter))
-    #     f.close()
 
     return result
 
 
-# Alternate name - this takes json directly through stdin
-# is there a limit to how much data i can pipe in like this?
-# feels kinda nasty
+# When called from main, read the input and output path from stdin
+# If output is not present, generate it
 if __name__ == "__main__":
     mod_name = sys.argv[1]
-    data = None
+    input_path = sys.argv[2]
+    output_path = None
+
+    if len(sys.argv) == 4:
+        output_path = sys.argv[3]
+    else:
+        print("auto-generating output path")
+        id = uuid.uuid4()
+        output_path = "tmp/data/{}.json".format(id)
+        print("Result will be output to {}".format(output_path))
 
     print("Calling services/{} ...".format(mod_name))
 
-    if len(sys.argv) >= 2:
-        data = json.loads(sys.argv[2])
-        # json_path = sys.argv[2]
-        # data = json.load(open(json_path))
-        print(" loaded input JSON OK!")
-
-    output = sys.argv[3]
     print()
-    result = main([mod_name, data, output, None])
+    result = call(mod_name, input_path, output_path)
     print()
     print("Done!")
     print(result)
-
-
-# # when called from main, look for
-# # a) a service name
-# # b) a path to input
-# # Then call the module via main()
-# if __name__ == "__main__":
-#     mod_name = sys.argv[1]
-#     data = None
-
-#     print("Calling services/{} ...".format(mod_name))
-
-#     if len(sys.argv) >= 2:
-#         json_path = sys.argv[2]
-#         data = json.load(open(json_path))
-#         print(" loaded input JSON OK!")
-
-#     print()
-#     result = main([mod_name, data])
-#     print()
-#     print("Done!")
-#     print(result)
