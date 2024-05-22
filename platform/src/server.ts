@@ -8,7 +8,7 @@ export const app = new Elysia();
 
 app.use(html());
 
-setupDir(app);
+await setupDir(app);
 await setupServices(app);
 
 export default (port: number | string = 3000) => {

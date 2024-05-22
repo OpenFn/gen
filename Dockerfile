@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY ./pyproject.toml ./poetry.lock poetry.toml ./
 COPY ./package.json bun.lockb ./
+COPY ./tsconfig.json ./
 
 COPY ./platform/ ./platform
 COPY ./services/ ./services
@@ -16,10 +17,6 @@ RUN poetry install --only main --no-root
 
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="${PATH}:/root/.bun/bin/"
-
-# node-gyp will fail to run unless node.js is installed
-RUN curl -sL https://deb.nodesource.com/setup_20.x  | /bin/bash -
-RUN apt-get install nodejs
 
 RUN bun install
 
