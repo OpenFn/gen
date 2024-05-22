@@ -17,7 +17,7 @@ class Payload(DictObj):
 def main(dataDict):
     data = Payload(dataDict)
 
-    result = {}
+    result = {"files": {}}
 
     logger.info("Generating adaptor template for {}".format(data.endpoint))
 
@@ -28,9 +28,9 @@ def main(dataDict):
 
     # TODO actually there's no point in returning the d.ts right? It's academic at this point
     sig = sig_gen.generate(data.model, dataDict["open_api_spec"], prompt, data.get("api_key"))
-    result["Adaptor.d.ts"] = sig
+    result["files"]["Adaptor.d.ts"] = sig
 
     code = code_gen.generate(data.model, sig, data.get("api_key"))
-    result["Adaptor.js"] = code
+    result["files"]["Adaptor.js"] = code
 
     return result
