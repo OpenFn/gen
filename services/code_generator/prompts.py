@@ -1,8 +1,7 @@
 import copy
-import logging
+from util import createLogger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = createLogger("code_generator.prompts")
 
 
 prompts = {

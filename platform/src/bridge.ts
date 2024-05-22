@@ -1,57 +1,115 @@
-// node-python bridge
-import { $ } from "bun";
-import { interpreter as py } from "node-calls-python";
+import readline from "node:readline";
 import path from "node:path";
+import { spawn } from "node:child_process";
+import { rm } from "node:fs/promises";
 
-// Use the major.minor python version to find the local poetry venv
-// see https://github.com/OpenFn/gen/issues/45
-const PYTHON_VERSION = "3.11";
+/**
+  Run a python script
+  Each script will be run in its own thread because
+  1) It saves script writers having to worry about long writing process
+  2) Removes any risk of stale credentials and ensures a pristine environment
+  3) it makes capturing logs a bit easier
+*/
+export const run = async (
+  scriptName: string,
+  args: JSON,
+  onLog?: (str: string) => void
+) => {
+  return new Promise<JSON | null>(async (resolve, reject) => {
+    const id = crypto.randomUUID();
 
-const allowReimport = process.env.NODE_ENV !== "production";
+    const tmpfile = path.resolve(`tmp/data/${id}-{}.json`);
 
-if (allowReimport) {
-  console.log(
-    "Running server in dev mode. Python scripts will be re-loaded on every call."
-  );
-}
+    const inputPath = tmpfile.replace("{}", "input");
+    const outputPath = tmpfile.replace("{}", "output");
 
-export const run = async (scriptName: string, args: JSON) => {
-  try {
-    // poetry should be configured to use a vnv in the local filesystem
-    // This makes it really easy to tell node-calls-python about the right env!
-    // IMPORTANT: if the python version changes, this path needs to be manually updated!
-    py.addImportPath(
-      path.resolve(`.venv/lib/python${PYTHON_VERSION}/site-packages`)
+    console.log("Initing input file at", inputPath);
+    await Bun.write(inputPath, JSON.stringify(args));
+
+    console.log("Initing output file at", outputPath);
+    await Bun.write(outputPath, "");
+
+    // const proc = Bun.spawn(
+    //   [
+    //     "poetry",
+    //     "run",
+    //     "python",
+    //     "services/entry.py",
+    //     scriptName,
+    //     JSON.stringify(args),
+    //   ],
+    //   {
+    //     onExit: async (proc, exitCode, signalCode, error) => {
+    //       // exit handler
+    //       const result = Bun.file("out.json");
+    //       const text = await result.text();
+    //       resolve(JSON.parse(text));
+    //     },
+    //   }
+    // );
+
+    // Use nodejs spawn
+    // I seem to have to use this because the bun stream doesn't work with readline
+    const proc = spawn(
+      "poetry",
+      ["run", "python", "services/entry.py", scriptName, inputPath, outputPath],
+      {}
     );
-    py.addImportPath(path.resolve("services"));
 
-    if (allowReimport) {
-      // In production, only import a module once
-      // But in dev, re-import every time
-      py.reimport("/services/");
-    }
+    proc.on("error", async (err) => {
+      console.log(err);
+    });
 
-    // import from a top level entry point
-    const pymodule = await py.import(
-      path.resolve(`./services/entry.py`),
-      allowReimport
-    );
+    proc.on("close", async (code) => {
+      if (code) {
+        console.error("Python process exited with code", code);
+        reject(code);
+      }
+      const result = Bun.file(outputPath);
+      const text = await result.text();
 
-    const result = await py.call(pymodule, "main", [scriptName, args]);
-    return result;
-  } catch (e) {
-    // Note that the error coming out will be a string with no stack trace :(
-    console.log(e);
-  }
-};
+      try {
+        await rm(inputPath);
+        await rm(outputPath);
+      } catch (e) {
+        console.error("Error removing temporary files");
+        console.error(e);
+      }
 
-// Try to dynamically lookup the python version
-// This is super unreliable - we're actually better
-// off witha hard-coded value
-const lookupPythonVersion = async () => {
-  // TOOD what is the python executable?
-  // Is this even what poetry is using?
-  const version = await $`python3 --version`.text(); // absolutely sick, unbelievable
-  // this is too hard - is there a better way to do it?
-  return version.replace("Python ", "").split(".").slice(0, 2).join(".");
+      if (text) {
+        resolve(JSON.parse(text));
+      } else {
+        console.warn("No data returned from pythonland");
+        resolve(null);
+      }
+    });
+
+    const rl = readline.createInterface({
+      input: proc.stdout,
+      crlfDelay: Infinity,
+    });
+    rl.on("line", (line) => {
+      // First divert the log line locally
+      console.log(line);
+
+      // Then divert any logs from a logger object to the websocket
+      if (/^(INFO|DEBUG|ERROR|WARN)\:/.test(line)) {
+        // TODO I'd love to break the log line up in to JSON actually
+        // { source, level, message }
+        onLog?.(line);
+      }
+    });
+
+    const rl2 = readline.createInterface({
+      input: proc.stderr,
+      crlfDelay: Infinity,
+    });
+    rl2.on("line", (line) => {
+      console.error(line);
+      // /Divert all errors to the websocket
+      onLog?.(line);
+    });
+
+    return;
+  });
 };

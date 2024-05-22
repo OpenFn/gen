@@ -1,4 +1,3 @@
-# relative imports work well!
 from .log import log
 
 

@@ -1,6 +1,9 @@
 import logging
-import os
 from .prompts import generate_prompt
+
+from util import createLogger
+
+logger = createLogger("code_generator.utils")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

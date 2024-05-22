@@ -51,6 +51,23 @@ The Javascript bridge will always call into `entry.py` and dynamically invoke
 your service's main function, so technically speaking all imports are relative
 to `entry.py`.
 
+## Logging
+
+A utility library is provided for you to create a logger:
+
+```python
+from util import createLogger
+
+logger = createLogger("myservice.filename")
+```
+
+You can use whatever name you like for the logger (including `__name__`).
+
+All lines from this logger are diverted to the CLI (via websocket).
+
+For "private" and debug logging, use `print()` statements. The end user will not
+see these.
+
 ## Documentation
 
 All modules should come with basic documentation.

@@ -1,5 +1,3 @@
-import logging
-
 import inference.inference
 
 from .prompts import generate_prompt
@@ -12,9 +10,9 @@ from util import DictObj
 
 from inference import inference
 
-# TODO the platform should deal with logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from util import createLogger
+
+logger = createLogger("signature_generator")
 
 
 class Payload(DictObj):

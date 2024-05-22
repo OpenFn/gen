@@ -20,40 +20,46 @@ installed:
 - poetry
 - bunjs
 
-You also need `python3-dev`, `g++` and `make` to be installted:
-
-```
-sudo apt install python3-dev make g++
-```
-
 ## Getting Started
 
-To run the server locally, run:
-
-- `poetry install`
-- `bun install`
-
-To start the server for local developement, run:
+To run the server locally, you need to install the python dependencies
 
 ```bash
-bun dev
+poetry install
 ```
 
-Any changes to the typescript files will trigger the server to be re-loaded. All
-python scripts will be re-laoded on each call. So you should rarely, if ever,
-need to restart the server.
-
-To start in production mode, run:
+Then start the server (note that bun install is not needed, see below)
 
 ```bash
 bun start
 ```
 
-In production mode, nothing will hot reload and python modules are cached.
+To start a hot-reloading development server which watches your typescript, run:
+
+```bash
+bun dev
+```
 
 To see an index of the available language services, head to `localhost:3000`.
 
-## Finetuning and dependency groups
+# Bun installation
+
+Bun does not require an installation, like npm does. You can run `bun start`
+right after cloning the repo.
+
+Bun will then install dependencies against the global cache on your machine.
+This still uses package.lock.
+
+To update a module version, run `bun add <module>@version>`, which will update
+your lockfile.
+
+One drawback of this is that there is no intelliense, because IDEs rely on
+node_modules to load d.ts files. You are welcome to run `bun install` to run
+from a node_modules. None of this affects python.
+
+See [bun auto-install]() for more details.
+
+## Finetuning and poetry dependency groups
 
 `poetry install` will only install the main dependencies - the stuff used in the
 docker image.
@@ -124,9 +130,36 @@ There is very little standard for formality in the JSON structures to date. The
 server may soon establish some conventions for better interopability with the
 CLI.
 
-The JS engine calls out to a long-running python process using
-`node-calls-python`. Python modules are pretty free-form but must adhere to a
-minimal structure. See the Contribution Guide for details.
+Python scripts are invoked through a child process. Each call to a service runs
+in its own context.
+
+Python modules are pretty free-form but must adhere to a minimal structure. See
+the Contribution Guide for details.
+
+## Websockets
+
+Every service can receive connections in one of two ways:
+
+- HTTP POST method
+- Websocket connection
+
+The same URL is used for both connections, clients must request upgrade to a
+websocket.
+
+Websocket connections will receive a live log stream.
+
+Websockets use the following events:
+
+`start`: sent by the client with a JSON payload in the `data` key.
+
+`complete`: sent by the server when the python script has completed. The result
+is a JSON payload in the `data` key.
+
+`log`: send by the server whenever a `print()` line is logged by the python
+process.
+
+Note that `print()` statements do not get send out to the web socket, as these
+are intended for local debugging. Only logs from a logger object are diverted.
 
 ## Python Setup
 
@@ -135,30 +168,15 @@ This repo uses `poetry` to manage dependencies.
 We use an "in-project" venv , which means a `.venv` folder will be created when
 you run `poetry install`.
 
-We call out to a live python environment from node, using a library called
-`node-calls-python`. We pass in the path to the local `.venv` folder so that the
-node-python bindings can see your poetry environment.
-
-The `node-calls-python` setup currently relies on a hard-coded python version.
-If the python version is changed, this value will need updating.
-
 All python is invoked through `entry.py`, which loads the environment properly
 so that relative imports work.
 
-You can invoke entry.py directly (ie, without HTTP) through bun from the root:
+You can invoke entry.py directly (ie, without HTTP or any intermedia js) through
+bun from the root:
 
 ```
 bun py echo tmp/payload.json
 ```
-
-## Installation Troubleshooting
-
-- Ensure all dependencies are installed
-- Ensure you've run `bun install` (unusual for Bun)
-- Maybe install node-gyp explicitly?
-- Ensure that `node-calls-python` has been built. In
-  `node_modules/node-calls-python` there should be a `Relesae` folder with stuff
-  inside.
 
 ## Docker
 
