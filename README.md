@@ -22,35 +22,44 @@ installed:
 
 ## Getting Started
 
-To run the server locally, run:
-
-- `poetry install`
-- `bun install`
-
-Note: bun install shouldn't actually be necessary anymore, now that we've
-dropped node-calls-python
-
-To start the server for local developement, run:
+To run the server locally, you need to install the python dependencies
 
 ```bash
-bun dev
+poetry install
 ```
 
-Any changes to the typescript files will trigger the server to be re-loaded. All
-python scripts will be re-laoded on each call. So you should rarely, if ever,
-need to restart the server.
-
-To start in production mode, run:
+Then start the server (note that bun install is not needed, see below)
 
 ```bash
 bun start
 ```
 
-In production mode, nothing will hot reload and python modules are cached.
+To start a hot-reloading development server which watches your typescript, run:
+
+```bash
+bun dev
+```
 
 To see an index of the available language services, head to `localhost:3000`.
 
-## Finetuning and dependency groups
+# Bun installation
+
+Bun does not require an installation, like npm does. You can run `bun start`
+right after cloning the repo.
+
+Bun will then install dependencies against the global cache on your machine.
+This still uses package.lock.
+
+To update a module version, run `bun add <module>@version>`, which will update
+your lockfile.
+
+One drawback of this is that there is no intelliense, because IDEs rely on
+node_modules to load d.ts files. You are welcome to run `bun install` to run
+from a node_modules. None of this affects python.
+
+See [bun auto-install]() for more details.
+
+## Finetuning and poetry dependency groups
 
 `poetry install` will only install the main dependencies - the stuff used in the
 docker image.

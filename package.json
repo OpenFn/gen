@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@elysiajs/html": "^1.0.2",
-    "elysia": "^1.0.13"
+    "elysia": "1.0.21"
   },
   "nodemonConfig": {
     "watch": [
