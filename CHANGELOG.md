@@ -4,4 +4,5 @@
 
 ### Minor Changes
 
-- Use child processes to run python scrips
+- Use child processes to run python scripts
+- add websocket connection with streaming logs
