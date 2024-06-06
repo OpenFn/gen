@@ -18,6 +18,9 @@ class DictObj:
             return self._dict[key]
         return None
 
+    def toDict(self):
+        return self._dict
+
 
 filename = None
 
@@ -34,8 +37,6 @@ def setLogOutput(f):
 
 
 def createLogger(name):
-    print("CREATE LOGGER  {}".format(name))
-
     # hmm. If I use a stream other than stdout,
     # I could send logger statements elsewhere
     # but I wouldn't be able to read it from the outside
@@ -44,7 +45,5 @@ def createLogger(name):
         logger = logging.getLogger(name)
 
         loggers[name] = logger
-    else:
-        print("RETURNING CACHED LOGGER")
 
     return loggers[name]
