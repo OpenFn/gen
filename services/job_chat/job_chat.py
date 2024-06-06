@@ -13,13 +13,15 @@ OPENAI_API_KEY = os.getenv(
 class Payload(DictObj):
     api_key: str
     content: str
-    # history:
-    # context:
+    # history # list of {role , content } dicts
+    # context { expressio, adaptor, input, output, log  }
 
 
 def main(dataDict) -> dict:
     data = Payload(dataDict)
-    result = generate(data.content, dataDict["history"], data.context, data.get("api_key"))
+    result = generate(
+        data.content, dataDict["history"] if "history" in dataDict else [], data.context, data.get("api_key")
+    )
     return result
 
 

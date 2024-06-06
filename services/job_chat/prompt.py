@@ -14,12 +14,28 @@ questions related to openfn, javascript programming, and workflow automation.
 def build_context(context):
     message = []
 
-    if context.adaptor is not None:
+    if context.has("adaptor"):
         message.append("I am using the OpenFn {} adaptor, use functions provided by its API".format(context.adaptor))
 
         # TODO we should surely import the API here or something?
     else:
         message.append("I am using an OpenFn Adaptor to write my job.")
+
+    if context.has("expression"):
+        message.append(
+            "My code currently looks like this :```{}```\n\n You should try and re-use any relevant user code in your response".format(
+                context.expression
+            )
+        )
+
+    if context.has("input"):
+        "My input data is :\n\n```{}```".format(context.input)
+
+    if context.has("output"):
+        "My last output data was :\n\n```{}```".format(context.output)
+
+    if context.has("log"):
+        "My last log output was :\n\n```{}```".format(context.log)
 
     return {"role": "user", "content": "\n\n".join(message)}
 

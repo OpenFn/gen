@@ -18,6 +18,9 @@ class DictObj:
             return self._dict[key]
         return None
 
+    def has(self, key):
+        return key in self._dict
+
     def toDict(self):
         return self._dict
 
