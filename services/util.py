@@ -1,5 +1,6 @@
 import logging
 import sys
+import requests
 
 
 # Thanks Joel! https://joelmccune.com/python-dictionary-as-object/
@@ -50,3 +51,13 @@ def createLogger(name):
         loggers[name] = logger
 
     return loggers[name]
+
+
+# call out to another apollo service through http
+def apollo(name, payload):
+    # TODO how do I do this properly?
+    # python land doesn't really even know about the server
+    # is env.port safe? Well maybe not
+    url = "http://localhost:3000/services/{}".format(name)
+    r = requests.post(url, payload)
+    return r.json()

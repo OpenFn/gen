@@ -55,7 +55,9 @@ def generate(content, history, context, api_key) -> str:
             logger.error("An error occurred during chat generation")
         else:
             logger.info("response from model:")
-            logger.info(content)
+            logger.info("")
+            logger.info("\n" + result)
+            logger.info("")
             logger.info("done")
 
         history.append({"role": "user", "content": content})

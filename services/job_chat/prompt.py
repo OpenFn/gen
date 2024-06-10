@@ -1,4 +1,4 @@
-from util import DictObj, createLogger
+from util import createLogger, apollo
 
 logger = createLogger("job_chat.prompt")
 
@@ -97,6 +97,12 @@ def build_context(context):
         message.append("I am using the OpenFn {} adaptor, use functions provided by its API".format(context.adaptor))
 
         # TODO we should surely import the API here or something?
+        adaptor_docs = apollo("describe_adaptor", {"adaptor": context.adaptor})
+        for doc in adaptor_docs:
+            message.append("Typescript definitions for doc")
+            message.append(adaptor_docs[doc]["description"])
+        message.append("-------------------------")
+
     else:
         message.append("I am using an OpenFn Adaptor to write my job.")
 
@@ -122,10 +128,10 @@ def build_context(context):
 def build_prompt(content, history, context):
     prompt = []
 
-    # push the system message
+    # # push the system message
     prompt.append({"role": "system", "content": system_message})
 
-    # push the history
+    # # push the history
     prompt.extend(history)
 
     # add context as a seperate message here

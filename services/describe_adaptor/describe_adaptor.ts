@@ -63,7 +63,7 @@ export const describePackage = async (
   for (const k in results) {
     finalResults[k] = {
       name: k,
-      descriptionn: results[k].join("\n\n"),
+      description: results[k].join("\n\n"),
     };
   }
 
