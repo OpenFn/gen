@@ -96,7 +96,6 @@ def build_context(context):
     if context.has("adaptor"):
         message.append("I am using the OpenFn {} adaptor, use functions provided by its API".format(context.adaptor))
 
-        # TODO we should surely import the API here or something?
         adaptor_docs = apollo("describe_adaptor", {"adaptor": context.adaptor})
         for doc in adaptor_docs:
             message.append("Typescript definitions for doc")
