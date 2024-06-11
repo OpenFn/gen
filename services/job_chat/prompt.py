@@ -127,14 +127,13 @@ def build_context(context):
 def build_prompt(content, history, context):
     prompt = []
 
-    # # push the system message
+    # push the system message
     prompt.append({"role": "system", "content": system_message})
 
-    # # push the history
+    # push the history
     prompt.extend(history)
 
     # add context as a seperate message here
-    # idk if this will work
     prompt.append(build_context(context))
 
     # Finally, append the latest message from the user

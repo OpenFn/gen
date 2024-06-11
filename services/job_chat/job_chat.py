@@ -14,7 +14,7 @@ class Payload(DictObj):
     api_key: str
     content: str
     # history # list of {role , content } dicts
-    # context { expressio, adaptor, input, output, log  }
+    # context { expression, adaptor, input, output, log  }
 
 
 def main(dataDict) -> dict:
