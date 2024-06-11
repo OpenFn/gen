@@ -30,6 +30,8 @@ filename = None
 
 loggers = {}
 
+apollo_port = 3000
+
 
 def setLogOutput(f):
     global filename
@@ -38,6 +40,12 @@ def setLogOutput(f):
         print("[entry.py] writing logs to {}".format(f))
 
     filename = f
+
+
+def set_apollo_port(p):
+    global apollo_port
+
+    apollo_port = p
 
 
 def createLogger(name):
@@ -55,9 +63,8 @@ def createLogger(name):
 
 # call out to another apollo service through http
 def apollo(name, payload):
-    # TODO how do I do this properly?
-    # python land doesn't really even know about the server
-    # is env.port safe? Well maybe not
-    url = "http://localhost:3000/services/{}".format(name)
+    global apollo_port
+
+    url = "http://127.0.0.1:{}/services/{}".format(apollo_port, name)
     r = requests.post(url, payload)
     return r.json()

@@ -4,7 +4,11 @@ export type ModuleDescription = {
   name: string;
   type: "py" | "ts";
 
-  handler?: (payload: any, onLog?: (str: string) => void) => Promise<any>;
+  handler?: (
+    port: number,
+    payload: any,
+    onLog?: (str: string) => void
+  ) => Promise<any>;
   summary?: string;
   readme?: string;
 };

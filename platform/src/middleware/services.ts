@@ -9,17 +9,18 @@ import describeModules, {
 
 const callService = (
   m: ModuleDescription,
+  port: number,
   payload?: any,
   onLog?: (str: string) => void
 ) => {
   if (m.type === "py") {
-    return run(m.name, payload as any, onLog);
+    return run(m.name, port, payload as any, onLog);
   } else {
-    return m.handler!(payload as any, onLog);
+    return m.handler!(port, payload as any, onLog);
   }
 };
 
-export default async (app: Elysia) => {
+export default async (app: Elysia, port: number) => {
   console.log("Loading routes:");
   const modules = await describeModules(path.resolve("./services"));
   app.group("/services", (app) => {
@@ -32,8 +33,7 @@ export default async (app: Elysia) => {
         console.log(`POST to /services/${name}`);
         // Note that elysia handles json parsing for me - neat!
         const payload = ctx.body;
-        const result = await callService(m, payload as any);
-        console.log("> RESULT", result);
+        const result = await callService(m, port, payload as any);
         // elysia will also stringify and set the headers if I return json
         return result;
       });
@@ -55,12 +55,14 @@ export default async (app: Elysia) => {
                 });
               };
 
-              callService(m, message.data as any, onLog).then((result) => {
-                ws.send({
-                  event: "complete",
-                  data: result,
-                });
-              });
+              callService(m, port, message.data as any, onLog).then(
+                (result) => {
+                  ws.send({
+                    event: "complete",
+                    data: result,
+                  });
+                }
+              );
             }
           } catch (e) {
             console.log(e);
