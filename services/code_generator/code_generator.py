@@ -19,9 +19,9 @@ class Payload(DictObj):
 # generate adaptor code based on a model and signature
 def main(dataDict) -> str:
     data = Payload(dataDict)
-    logger.generate("Running code generator with model {}".format(data.model))
+    logger.info("Running code generator with model {}".format(data.model))
     result = generate(data.model, data.signature, data.get("api_key"))
-    logger.generate("Code generation complete!")
+    logger.info("Code generation complete!")
     return result
 
 
