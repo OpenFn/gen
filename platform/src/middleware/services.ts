@@ -3,13 +3,29 @@ import { Elysia } from "elysia";
 import path from "node:path";
 
 import { run } from "../bridge";
-import describeModules from "../util/describe-modules";
+import describeModules, {
+  type ModuleDescription,
+} from "../util/describe-modules";
 
-export default async (app: Elysia) => {
+const callService = (
+  m: ModuleDescription,
+  port: number,
+  payload?: any,
+  onLog?: (str: string) => void
+) => {
+  if (m.type === "py") {
+    return run(m.name, port, payload as any, onLog);
+  } else {
+    return m.handler!(port, payload as any, onLog);
+  }
+};
+
+export default async (app: Elysia, port: number) => {
   console.log("Loading routes:");
   const modules = await describeModules(path.resolve("./services"));
   app.group("/services", (app) => {
-    modules.forEach(({ name, readme }) => {
+    modules.forEach((m) => {
+      const { name, readme } = m;
       console.log(" - mounted /services/" + name);
 
       // simple post
@@ -17,8 +33,7 @@ export default async (app: Elysia) => {
         console.log(`POST to /services/${name}`);
         // Note that elysia handles json parsing for me - neat!
         const payload = ctx.body;
-        const result = await run(name, payload as any);
-        console.log("> RESULT", result);
+        const result = await callService(m, port, payload as any);
         // elysia will also stringify and set the headers if I return json
         return result;
       });
@@ -40,12 +55,14 @@ export default async (app: Elysia) => {
                 });
               };
 
-              run(name, message.data as any, onLog).then((result) => {
-                ws.send({
-                  event: "complete",
-                  data: result,
-                });
-              });
+              callService(m, port, message.data as any, onLog).then(
+                (result) => {
+                  ws.send({
+                    event: "complete",
+                    data: result,
+                  });
+                }
+              );
             }
           } catch (e) {
             console.log(e);

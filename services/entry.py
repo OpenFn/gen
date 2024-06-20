@@ -1,6 +1,7 @@
 import sys
 import json
 from dotenv import load_dotenv
+from util import set_apollo_port
 import uuid
 
 # This will load from the ../.env file (at root)
@@ -36,13 +37,18 @@ if __name__ == "__main__":
     input_path = sys.argv[2]
     output_path = None
 
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 5:
         output_path = sys.argv[3]
     else:
         print("auto-generating output path")
         id = uuid.uuid4()
         output_path = "tmp/data/{}.json".format(id)
         print("Result will be output to {}".format(output_path))
+
+    apollo_port = sys.argv[4]
+    if apollo_port is not None:
+        print("Setting apollo port to {}".format(apollo_port))
+        set_apollo_port(apollo_port)
 
     print("Calling services/{} ...".format(mod_name))
 

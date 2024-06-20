@@ -8,10 +8,10 @@ export const app = new Elysia();
 
 app.use(html());
 
-await setupDir(app);
-await setupServices(app);
+export default async (port: number | string = 3000) => {
+  await setupDir(app);
+  await setupServices(app, port);
 
-export default (port: number | string = 3000) => {
   console.log("Apollo Server listening on ", port);
   app.listen(port);
 };

@@ -12,6 +12,7 @@ import { rm } from "node:fs/promises";
 */
 export const run = async (
   scriptName: string,
+  port: number, // needed for self-calling services in pythonland
   args: JSON,
   onLog?: (str: string) => void
 ) => {
@@ -50,9 +51,18 @@ export const run = async (
 
     // Use nodejs spawn
     // I seem to have to use this because the bun stream doesn't work with readline
+
     const proc = spawn(
       "poetry",
-      ["run", "python", "services/entry.py", scriptName, inputPath, outputPath],
+      [
+        "run",
+        "python",
+        "services/entry.py",
+        scriptName,
+        inputPath,
+        outputPath,
+        `${port}`,
+      ],
       {}
     );
 

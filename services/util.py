@@ -1,5 +1,6 @@
 import logging
 import sys
+import requests
 
 
 # Thanks Joel! https://joelmccune.com/python-dictionary-as-object/
@@ -18,10 +19,18 @@ class DictObj:
             return self._dict[key]
         return None
 
+    def has(self, key):
+        return key in self._dict
+
+    def toDict(self):
+        return self._dict
+
 
 filename = None
 
 loggers = {}
+
+apollo_port = 3000
 
 
 def setLogOutput(f):
@@ -33,9 +42,13 @@ def setLogOutput(f):
     filename = f
 
 
-def createLogger(name):
-    print("CREATE LOGGER  {}".format(name))
+def set_apollo_port(p):
+    global apollo_port
 
+    apollo_port = p
+
+
+def createLogger(name):
     # hmm. If I use a stream other than stdout,
     # I could send logger statements elsewhere
     # but I wouldn't be able to read it from the outside
@@ -44,7 +57,14 @@ def createLogger(name):
         logger = logging.getLogger(name)
 
         loggers[name] = logger
-    else:
-        print("RETURNING CACHED LOGGER")
 
     return loggers[name]
+
+
+# call out to another apollo service through http
+def apollo(name, payload):
+    global apollo_port
+
+    url = "http://127.0.0.1:{}/services/{}".format(apollo_port, name)
+    r = requests.post(url, payload)
+    return r.json()

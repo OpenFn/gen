@@ -2,8 +2,13 @@ import { readFile, readdir } from "node:fs/promises"; // no bun api yet
 
 export type ModuleDescription = {
   name: string;
+  type: "py" | "ts";
 
-  // TODO - pull out metadata from each
+  handler?: (
+    port: number,
+    payload: any,
+    onLog?: (str: string) => void
+  ) => Promise<any>;
   summary?: string;
   readme?: string;
 };
@@ -17,9 +22,36 @@ export default async (location: string): Promise<ModuleDescription[]> => {
 
   const result: ModuleDescription[] = [];
   for (const srv of services) {
+    let type: "py" | "ts";
+    let handler;
+
+    const hasPyIndex = await Bun.file(
+      `${location}/${srv.name}/${srv.name}.py`
+    ).exists();
+    if (hasPyIndex) {
+      type = "py";
+    } else {
+      const hasTsIndex = await Bun.file(
+        `${location}/${srv.name}/${srv.name}.ts`
+      ).exists();
+      if (hasTsIndex) {
+        type = "ts";
+        const mod = await import(`${location}/${srv.name}/${srv.name}.ts`);
+        handler = mod.default;
+      } else {
+        console.warn("WARNING: no index file found for ", srv.name);
+        continue;
+      }
+    }
+
+    // if no index file, skip it with a warning
     const s: ModuleDescription = {
       name: srv.name,
+      // is this a python or js service?
+      type,
+      handler,
     };
+
     try {
       const rm = await readFile(`${location}/${srv.name}/README.md`, "utf8");
 
