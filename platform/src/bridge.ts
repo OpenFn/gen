@@ -80,7 +80,7 @@ export const run = async (
 
       try {
         await rm(inputPath);
-        // await rm(outputPath);
+        await rm(outputPath);
       } catch (e) {
         console.error("Error removing temporary files");
         console.error(e);
