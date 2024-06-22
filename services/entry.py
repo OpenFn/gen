@@ -45,10 +45,11 @@ if __name__ == "__main__":
         output_path = "tmp/data/{}.json".format(id)
         print("Result will be output to {}".format(output_path))
 
-    apollo_port = sys.argv[4]
-    if apollo_port is not None:
-        print("Setting apollo port to {}".format(apollo_port))
-        set_apollo_port(apollo_port)
+    if len(sys.argv) >= 5:
+        apollo_port = sys.argv[4]
+        if apollo_port is not None:
+            print("Setting apollo port to {}".format(apollo_port))
+            set_apollo_port(apollo_port)
 
     print("Calling services/{} ...".format(mod_name))
 

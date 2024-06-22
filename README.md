@@ -20,6 +20,9 @@ installed:
 - poetry
 - bunjs
 
+We recommend using asdf with the
+[python plugin](https://github.com/asdf-community/asdf-python) installed.
+
 ## Getting Started
 
 To run the server locally, you need to install the python dependencies
