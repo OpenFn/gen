@@ -45,7 +45,18 @@ bun dev
 
 To see an index of the available language services, head to `localhost:3000`.
 
-# Bun installation
+## Troubleshooting
+
+If you get errors like `poetry: command not found` (error code 127), and poetry
+is set up on your machine, you may need to add these env vars to your `.bashrc`
+(or whatever you use):
+
+```
+export BUN_INSTALL= "$HOME/.bun"
+export PATH= "$BUN_INSTALL/bin:$PATH"
+```
+
+## Bun installation
 
 Bun does not require an installation, like npm does. You can run `bun start`
 right after cloning the repo.
