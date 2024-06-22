@@ -3,9 +3,6 @@ import { fetchDTSListing, fetchFile, getNameAndVersion } from "./util";
 // TODO log streaming is not implemented yet
 // This is not designed to be called from the CLI
 export default (port: number, payload: any, onLog: any) => {
-  console.log("hello from  TS land!");
-  console.log(payload);
-
   return describePackage(payload.adaptor);
 };
 
