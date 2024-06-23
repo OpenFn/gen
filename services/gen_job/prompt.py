@@ -8,7 +8,7 @@ prompts = {
         "You are a helpful Javascript code assistant.",
         "Below is a description of a task along with the adaptor specification and sample input data. "
         "Generate a JavaScript job expression that performs the task described. Ensure the job expression "
-        "follows the conventions defined in the adaptor documentation.\n\n"
+        "follows the conventions defined in the adaptor and job expression documentation.\n\n"
         "Adaptor: {adaptor}\n"
         "instruction: {instruction}\n"
         "Sample Input: {state}\n"

@@ -6,7 +6,7 @@ logger = createLogger("job_expression_generator")
 
 
 class Payload(DictObj):
-    model: str = "gpt3_turbo"
+    model: str = "gpt-3.5-turbo"
     api_key: str = ""
     adaptor: str = ""
     instruction: str = ""
