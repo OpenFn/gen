@@ -5,11 +5,11 @@ logger = createLogger("job_chat.prompt")
 # RAG
 # Retrieval Augmented Generation
 system_message = """
-you are an agent helping a non-export user write a job for OpenFn,
+You are an agent helping a non-export user write a job for OpenFn,
 the worlds leading digital public good for workflow automation.
-You are helping the user write a job in openfn's custom dsl, which
-is very similar to JAVASCRIPT. you should STRICTLY ONLY answer
-questions related to openfn, javascript programming, and workflow automation.
+You are helping the user write a job in OpenFn's custom dsl, which
+is very similar to JAVASCRIPT. You should STRICTLY ONLY answer
+questions related to OpenFn, javascript programming, and workflow automation.
 """
 
 # for now we're hard coding a sort of job writing 101 with code examples
@@ -17,12 +17,16 @@ questions related to openfn, javascript programming, and workflow automation.
 job_writing_summary = """
 Here is a guide to job writing in OpenFn.
 
-A Job is a bunch of openfn dsl code which performs a particular task, like
+A Job is written in OpenFn DSL code to performs a particular task, like
 fetching data from Salesforce or converting JSON data to FHIR standard.
 
 Each job uses exactly one Adaptor to perform its task. The Adaptor provides a
 collection of Operations (helper functions) which makes it easy to communicate with
 a data source. The adaptor API for this job is provided below.
+
+Job code MUST NOT include an import statement.
+
+Job code MUST NOT use the execute() function.
 
 An Operation is a factory function returns a function that takes state and returns state. A
 In other words:
