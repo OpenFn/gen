@@ -1,5 +1,11 @@
 # apollo
 
+## 0.3.1
+
+### Patch Changes
+
+- job_chat: tweak prompt for better performance
+
 ## 0.3.0
 
 ### Minor Changes
