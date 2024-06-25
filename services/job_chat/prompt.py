@@ -24,19 +24,22 @@ Each job uses exactly one Adaptor to perform its task. The Adaptor provides a
 collection of Operations (helper functions) which makes it easy to communicate with
 a data source. The adaptor API for this job is provided below.
 
-Job code MUST NOT include an import statement.
+A job MUST NOT include an import or require statement.
 
-Job code MUST NOT use the execute() function.
+A job MUST NOT use the execute() function.
 
-An Operation is a factory function returns a function that takes state and returns state. A
-In other words:
+A job MUST only contain function calls at the top level.
+
+A job MUST NOT include any other JavaScript statements at the top level.
+
+A job MUST NOT include assignments at the top level
+
+A job SHOULD NOT use async/await or promises.
+
+An Operation is a factory function which returns a function that takes state and returns state, like this:
 ```
 const myOperation = (arg) => (state) => { /* do something with arg and state */ return state; }
 ```
-
-The job code will be compiled into an array operation factories, which at runtime will be 
-executed in series, with state passed into each one.
-
 For example, here's how we issue a GET request with the http adaptor:
 ```
 get('/patients');
@@ -47,14 +50,6 @@ but we can also pass a value from state:
 ```
 get(state => state.endpoint);
 ```
-This works because each operation's arguments allow a function to be passed,
-which will be lazily invoked at runtime with the latest state value.
-
-Job code should only contain Operations at the top level/scope - you MUST NOT
-include any other JavaScript statements at the top level.
-
-Job code is written in modern JavaScript, and although async/await is allowed
-inside a callback function (never at the top level), it is rarely used.
 
 Example job code with the HTTP adaptor:
 ```
